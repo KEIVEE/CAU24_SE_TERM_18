@@ -35,7 +35,16 @@ class MyFrame extends JFrame{
         jok.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new IssueFrame();
+                String IDcheck;
+                String pwcheck;
+                IDcheck = id.getText();
+                pwcheck = password.getText();
+                if(IDcheck.equals("admin") && pwcheck.equals("0011")){
+                    new AdminFrame();
+                }
+                else {
+                    new IssueFrame();
+                }
                 dispose();
                 revalidate();
                 repaint();
