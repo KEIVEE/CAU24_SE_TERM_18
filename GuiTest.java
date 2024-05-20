@@ -1,6 +1,12 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 class Myframe extends JFrame{
     public Myframe(String title){
@@ -23,7 +29,15 @@ class Myframe extends JFrame{
 
 public class GuiTest {
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws SQLException {
+        String url = "jdbc:mysql:aws://sedb.cf866m2eqkwj.us-east-1.rds.amazonaws.com/";
+        String userName = "admin";
+        String password = "00000000";
+        String dbName = "test";
+
+        Connection connection = DriverManager.getConnection(url, userName, password);
+        Statement statement;
+        ResultSet resultset;
         Myframe login = new Myframe("Log in");
 
         JButton loginButton = new JButton("Log In");
@@ -43,9 +57,7 @@ public class GuiTest {
 
         login.revalidate();
         login.repaint();
-        //JTabbedPane pane = frame.createTab();
-        //frame.add(pane);
 
-        //JButton
     }
+
 }
