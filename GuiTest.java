@@ -1,7 +1,14 @@
 import javax.swing.*;
+import javax.xml.transform.Result;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 class IssueFrame extends JFrame {
     public IssueFrame(){
@@ -37,14 +44,44 @@ class MyFrame extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 String IDcheck;
                 String pwcheck;
+
+                String url = "jdbc:mysql:aws://sedb.cf866m2eqkwj.us-east-1.rds.amazonaws.com/sedb";
+                String userName = "admin";
+                String password1 = "00000000";
+                String dbName = "test";
+
+                Connection connection = null;
+                try {
+                    connection = DriverManager.getConnection(url, userName, password1);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                Statement statement;
+                ResultSet resultset;
                 IDcheck = id.getText();
                 pwcheck = password.getText();
+                String query = "select password from account where id = '" + IDcheck + "'";
+                try {
+                    Statement stmt = connection.createStatement();
+                    ResultSet rs = stmt.executeQuery(query);
+                    while(rs.next()){
+                        if(rs.getString("password").equals(pwcheck)){
+                            new AdminFrame();
+                        }
+                    }
+
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                /*
                 if(IDcheck.equals("admin") && pwcheck.equals("0011")){
                     new AdminFrame();
                 }
                 else {
                     new IssueFrame();
-                }
+                }*/
+
                 dispose();
                 revalidate();
                 repaint();
@@ -71,8 +108,9 @@ class MyFrame extends JFrame{
 
 public class GuiTest{
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         new MyFrame();
+
 
     }
 }
