@@ -49,7 +49,6 @@ class MyFrame extends JFrame{
                 String url = "jdbc:mysql:aws://sedb.cf866m2eqkwj.us-east-1.rds.amazonaws.com/sedb";
                 String userName = "admin";
                 String serverPassword = "00000000";
-                String dbName = "test";
 
                 Connection connection = null;
                 try {
@@ -58,8 +57,6 @@ class MyFrame extends JFrame{
                     throw new RuntimeException(ex);
                 }
 
-                Statement statement;
-                ResultSet resultset;
                 IDcheck = id.getText();
                 pwcheck = password.getText();
                 String query = "select password, category from account where id = '" + IDcheck + "'";
@@ -88,7 +85,7 @@ class MyFrame extends JFrame{
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
-                if(login_status==false){//로그인 실패 시
+                if(!login_status){//로그인 실패 시
                     new MyFrame();//다시 뜨게 함
                 }
 
