@@ -6,7 +6,7 @@
   </component>
   <component name="DBNavigator.Project.DataEditorManager">
     <record-view-column-sorting-type value="BY_INDEX" />
-    <value-preview-text-wrapping value="true" />
+    <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
   <component name="DBNavigator.Project.DatabaseBrowserManager">
@@ -16,9 +16,8 @@
     <loaded-nodes />
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
-    <connection id="573e0da7-f1b3-4bbc-95d2-7dba5998b7c2">
-      <console name="Connection" type="STANDARD" schema="" session="Main" />
-      <console name="console" type="STANDARD" schema="mysql" session="Main"><![CDATA[use test;]]></console>
+    <connection id="374245fc-df80-4f7f-b8b3-40a22ec51f8c">
+      <console name="sedb" type="STANDARD" schema="" session="Main" />
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -28,7 +27,18 @@
     <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
-    <connection id="573e0da7-f1b3-4bbc-95d2-7dba5998b7c2" />
+    <connection id="374245fc-df80-4f7f-b8b3-40a22ec51f8c" />
+  </component>
+  <component name="DBNavigator.Project.ExecutionManager">
+    <retain-sticky-names value="false" />
+  </component>
+  <component name="DBNavigator.Project.MethodExecutionManager">
+    <method-browser />
+    <execution-history>
+      <group-entries value="true" />
+      <execution-inputs />
+    </execution-history>
+    <argument-values-cache />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />
@@ -36,9 +46,9 @@
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="573e0da7-f1b3-4bbc-95d2-7dba5998b7c2" active="true" signed="true">
+      <connection id="374245fc-df80-4f7f-b8b3-40a22ec51f8c" active="true" signed="true">
         <database>
-          <name value="Connection" />
+          <name value="sedb" />
           <description value="" />
           <database-type value="MYSQL" />
           <config-type value="BASIC" />
@@ -47,14 +57,14 @@
           <driver-library value="" />
           <driver value="" />
           <url-type value="DATABASE" />
-          <host value="test.cv0mwoo4otui.ap-northeast-2.rds.amazonaws.com" />
+          <host value="sedb.cf866m2eqkwj.us-east-1.rds.amazonaws.com" />
           <port value="3306" />
           <database value="mysql" />
           <tns-folder value="" />
           <tns-profile value="" />
           <type value="USER_PASSWORD" />
           <user value="admin" />
-          <deprecated-pwd value="MTIzNDU2Nzg=" />
+          <deprecated-pwd value="MDAwMDAwMDA=" />
         </database>
         <properties>
           <auto-commit value="false" />
