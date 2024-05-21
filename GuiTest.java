@@ -42,49 +42,66 @@ class MyFrame extends JFrame{
         jok.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                boolean login_status = false;
                 String IDcheck;
                 String pwcheck;
 
                 String url = "jdbc:mysql:aws://sedb.cf866m2eqkwj.us-east-1.rds.amazonaws.com/sedb";
                 String userName = "admin";
-                String password1 = "00000000";
+                String serverPassword = "00000000";
                 String dbName = "test";
 
                 Connection connection = null;
                 try {
-                    connection = DriverManager.getConnection(url, userName, password1);
+                    connection = DriverManager.getConnection(url, userName, serverPassword);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
+
                 Statement statement;
                 ResultSet resultset;
                 IDcheck = id.getText();
                 pwcheck = password.getText();
-                String query = "select password from account where id = '" + IDcheck + "'";
+                String query = "select password, category from account where id = '" + IDcheck + "'";
                 try {
                     Statement stmt = connection.createStatement();
                     ResultSet rs = stmt.executeQuery(query);
                     while(rs.next()){
                         if(rs.getString("password").equals(pwcheck)){
-                            new AdminFrame();
+                            if(rs.getString("category").equals("admin")){
+                                new AdminFrame();
+                            }
+                            else if(rs.getString("category").equals("tester")){
+                                new TesterFrame();
+                            }
+                            else if(rs.getString("category").equals("PL")){
+                                new PLFrame();
+                            }
+                            else if(rs.getString("category").equals("dev")){
+                                new DevFrame();
+                            }
+                            login_status = true;
                         }
+
                     }
 
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
-
-                /*
-                if(IDcheck.equals("admin") && pwcheck.equals("0011")){
-                    new AdminFrame();
+                if(login_status==false){//로그인 실패 시
+                    new MyFrame();//다시 뜨게 함
                 }
-                else {
-                    new IssueFrame();
-                }*/
+
 
                 dispose();
                 revalidate();
                 repaint();
+
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         panel2.add(jok);
