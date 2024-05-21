@@ -1,5 +1,3 @@
-import software.aws.rds.jdbc.mysql.shading.com.mysql.cj.exceptions.MysqlErrorNumbers;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
