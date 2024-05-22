@@ -26,7 +26,7 @@ class AdminF extends JFrame { //admin frame 클래스
         dev.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                NewAccount makeDev = new NewAccount();
+                new NewAccount();
             }
         });
 
@@ -64,7 +64,7 @@ class NewAccount extends JFrame{ //테스터 계정 만들기 클래스
                 String userName = "admin";
                 String serverPassword = "00000000";
 
-                Connection connection = null;
+                Connection connection;
                 try {
                     connection = DriverManager.getConnection(url, userName, serverPassword);
                 } catch (SQLException ex) {
