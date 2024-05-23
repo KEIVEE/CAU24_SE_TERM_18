@@ -61,7 +61,26 @@ class MyFrame extends JFrame{
                 IDcheck = id.getText();
                 pwcheck = password.getText();
                 String query = "select password, category from account where id = '" + IDcheck + "'";
-                try {
+                String issueQuery = "select * from issue";
+
+                try{
+                    ArrayList<Issue> issues = new ArrayList<>();
+                    Statement issueStmt = connection.createStatement();
+                    ResultSet issueRs = issueStmt.executeQuery(issueQuery);
+                    while(issueRs.next()){
+                        String title = issueRs.getString("title");
+                        Status status = Status.valueOf(issueRs.getString("status"));
+                        Priority priority = Priority.valueOf(issueRs.getString("priority"));
+                        String date = issueRs.getString("date");
+                        String reporter = issueRs.getString("reporter");
+                        String assignee = issueRs.getString("assignee");
+                        String fixer = issueRs.getString("fixer");
+
+                        ArrayList<Comment> comments = new ArrayList<>();
+
+                        issues.add(new Issue(title, status, priority, reporter, assignee, fixer, comments));
+                    }
+
                     Statement stmt = connection.createStatement();
                     ResultSet rs = stmt.executeQuery(query);
                     while(rs.next()){
@@ -73,24 +92,6 @@ class MyFrame extends JFrame{
                                 new TesterFrame();
                             }
                             else if(rs.getString("category").equals("PL")){
-                                String issueQuery = "select * from issue";
-                                ArrayList<Issue> issues = new ArrayList<>();
-                                Statement issueStmt = connection.createStatement();
-                                ResultSet issueRs = issueStmt.executeQuery(issueQuery);
-
-                                while(issueRs.next()){
-                                    String title = issueRs.getString("title");
-                                    Status status = Status.valueOf(issueRs.getString("status"));
-                                    Priority priority = Priority.valueOf(issueRs.getString("priority"));
-                                    String date = issueRs.getString("date");
-                                    String reporter = issueRs.getString("reporter");
-                                    String assignee = issueRs.getString("assignee");
-                                    String fixer = issueRs.getString("fixer");
-
-                                    ArrayList<Comment> comments = new ArrayList<>();
-
-                                    issues.add(new Issue(title, status, priority, reporter, assignee, fixer, comments));
-                                }
                                 new PLFrame(new Browse(issues));
                             }
                             else if(rs.getString("category").equals("dev")){
