@@ -3,6 +3,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Issue {
+    private String projectName;
     private String title;
     private Status status;
     private Priority priority;
@@ -12,7 +13,8 @@ public class Issue {
     private String fixer;
     private ArrayList<Comment> comments;
 
-    public Issue(String title, Status status, Priority priority, String reporter, String assignee, String fixer, ArrayList<Comment> comments){
+    public Issue(String projectName,String title, Status status, Priority priority, String reporter, String assignee, String fixer, ArrayList<Comment> comments){
+        this.projectName = projectName;
         this.title = title;
         this.status = status;
         this.priority = priority;

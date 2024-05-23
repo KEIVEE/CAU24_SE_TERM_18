@@ -20,7 +20,7 @@ class SelectionF extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(category.getCategory().equals("tester")){
-                    new TesterFrame();
+                    new TesterFrame(proj.getName(project.getSelectedIndex()));
                 }
                 else if(category.getCategory().equals("PL")){
                     new PLFrame();

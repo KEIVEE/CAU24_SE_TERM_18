@@ -127,6 +127,7 @@ class MyFrame extends JFrame{
         bigPanel.add(panel);
         bigPanel.add(panel2);
 
+
         add(bigPanel);
 
         super.revalidate();
