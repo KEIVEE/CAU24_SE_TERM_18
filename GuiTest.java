@@ -61,15 +61,15 @@ class MyFrame extends JFrame{
 
                 IDcheck = id.getText();
                 pwcheck = password.getText();
-                String loginQuery = "select password, category from account where id = '" + IDcheck + "'";
+                String loginQuery = "select * from account where id = '" + IDcheck + "'";
                 String projectQuery = "select * from project";
+
                 try {
 
                     Statement projectStmt = connection.createStatement();
                     ResultSet projectRs = projectStmt.executeQuery(projectQuery);
                     while(projectRs.next()){
                         proj.add(projectRs.getString("name"));
-                        System.out.println("added");
                     }
 
 
@@ -77,21 +77,24 @@ class MyFrame extends JFrame{
                     ResultSet LoginRs = LoginStmt.executeQuery(loginQuery);
                     while(LoginRs.next()){
                         if(LoginRs.getString("password").equals(pwcheck)){
+
                             if(LoginRs.getString("category").equals("admin")){
                                 new AdminFrame();
                             }
                             else if(LoginRs.getString("category").equals("tester")){
-                                //new TesterFrame();
-                                new ProjectSelection(proj, "tester");
+                                Tester testerUser = new Tester(LoginRs.getString("name"));
+                                new ProjectSelection(proj, testerUser);
                             }
                             else if(LoginRs.getString("category").equals("PL")){
-                                new ProjectSelection(proj, "PL");
+                                PL PLUser = new PL(LoginRs.getString("name"));
+                                new ProjectSelection(proj, PLUser);
                             }
                             else if(LoginRs.getString("category").equals("dev")){
-                                new ProjectSelection(proj, "dev");
+                                Dev devUser = new Dev(LoginRs.getString("name"));
+                                new ProjectSelection(proj, devUser);
                             }
                             login_status = true;
-                        }
+                        }//비번 틀린 곳을 구현해야 함
 
                     }
 

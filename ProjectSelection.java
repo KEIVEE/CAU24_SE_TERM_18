@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 class SelectionF extends JFrame{
     JComboBox<String> project = new JComboBox<>();
 
-    SelectionF(Project proj, String category){
+    SelectionF(Project proj, User category){
         super("Select Project");
         this.setSize(600, 200);
         this.setVisible(true);
@@ -19,13 +19,13 @@ class SelectionF extends JFrame{
         select.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(category.equals("tester")){
+                if(category.getCategory().equals("tester")){
                     new TesterFrame();
                 }
-                else if(category.equals("PL")){
+                else if(category.getCategory().equals("PL")){
                     new PLFrame();
                 }
-                else if(category.equals("dev")){
+                else if(category.getCategory().equals("dev")){
                     new DevFrame();
                 }
 
@@ -56,7 +56,7 @@ class SelectionF extends JFrame{
 
 }
 public class ProjectSelection {
-    public ProjectSelection(Project proj, String category){
+    public ProjectSelection(Project proj, User category){
         new SelectionF(proj, category);
     }
 }
