@@ -18,10 +18,12 @@ class AdminF extends JFrame { //admin frame 클래스
         JTabbedPane pane = new JTabbedPane();
         JPanel AC = new JPanel();
         JButton dev = new JButton("계정 추가");
-
+        JPanel Pr = new JPanel();
         AC.add(dev);
+        JButton MakeProj = new JButton("프로젝트 추가");
+        Pr.add(MakeProj);
         pane.addTab("계정 추가", AC);
-        pane.addTab("프로젝트 추가",new JLabel("t1")); //나중에 바꾸기
+        pane.addTab("프로젝트 추가",Pr);
 
         dev.addActionListener(new ActionListener() {
             @Override
@@ -29,10 +31,109 @@ class AdminF extends JFrame { //admin frame 클래스
                 new NewAccount();
             }
         });
+        MakeProj.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new NewProject();
+            }
+        });
 
 
         return pane;
     }
+}
+
+class NewProject extends JFrame{
+    public NewProject(){
+        super("Make a new project");
+        setVisible(true);
+        setSize(300,100);
+        setLayout(new GridLayout(2,1));
+
+        Pr myPr = new Pr();
+        JPanel make = new JPanel();
+        JButton yes = new JButton("OK");
+        JButton no = new JButton("CANCEL");
+        make.add(yes);
+        make.add(no);
+
+        add(myPr);
+        add(make);
+        pack();
+
+        yes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = myPr.Pname.getText();
+
+                String url = "jdbc:mysql:aws://sedb.cf866m2eqkwj.us-east-1.rds.amazonaws.com/sedb";
+                String userName = "admin";
+                String serverPassword = "00000000";
+
+                Connection connection;
+                Statement stmt = null;
+
+                try{
+                    connection = DriverManager.getConnection(url, userName, serverPassword);
+
+                } catch(SQLException ex){
+                    throw new RuntimeException(ex);
+                }
+                String query = "insert into project " + "values('" + name+"')";
+                try{
+                    stmt = connection.createStatement();
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                    if(ex.getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException")) //이름이 겹칠 시
+                        new NewProject();//다시.
+                }
+
+                repaint();
+                revalidate();
+
+                try{
+                    assert stmt != null;
+                    stmt.close();
+                    connection.close();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                dispose();
+            }
+        });
+        no.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+
+
+    }
+}
+
+class Pr extends JPanel{
+    JLabel name;
+    JTextField Pname;
+    public Pr(){
+
+        JPanel PrN = new JPanel(new GridLayout(1,2)); //프로젝트 이름 적는 필드
+
+
+        name = new JLabel("name");
+        Pname = new JTextField(30);
+        PrN.add(name);
+        PrN.add(Pname);
+        this.add(PrN);
+        repaint();
+        revalidate();
+
+
+    }
+
+
+
+
 }
 
 

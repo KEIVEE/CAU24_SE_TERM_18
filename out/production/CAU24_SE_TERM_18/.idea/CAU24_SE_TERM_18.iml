@@ -10,7 +10,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/aws-mysql-jdbc-1.1.14.jar!/" />
+          <root url="jar://E:/다운로드/aws-mysql-jdbc-1.1.14.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
