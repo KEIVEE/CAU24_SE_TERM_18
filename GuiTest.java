@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 class IssueFrame extends JFrame {
     public IssueFrame(){
@@ -72,7 +73,25 @@ class MyFrame extends JFrame{
                                 new TesterFrame();
                             }
                             else if(rs.getString("category").equals("PL")){
-                                new PLFrame();
+                                String issueQuery = "select * from issue";
+                                ArrayList<Issue> issues = new ArrayList<>();
+                                Statement issueStmt = connection.createStatement();
+                                ResultSet issueRs = issueStmt.executeQuery(issueQuery);
+
+                                while(issueRs.next()){
+                                    String title = issueRs.getString("title");
+                                    Status status = Status.valueOf(issueRs.getString("status"));
+                                    Priority priority = Priority.valueOf(issueRs.getString("priority"));
+                                    String date = issueRs.getString("date");
+                                    String reporter = issueRs.getString("reporter");
+                                    String assignee = issueRs.getString("assignee");
+                                    String fixer = issueRs.getString("fixer");
+
+                                    ArrayList<Comment> comments = new ArrayList<>();
+
+                                    issues.add(new Issue(title, status, priority, reporter, assignee, fixer, comments));
+                                }
+                                new PLFrame(new Browse(issues));
                             }
                             else if(rs.getString("category").equals("dev")){
                                 new DevFrame();
