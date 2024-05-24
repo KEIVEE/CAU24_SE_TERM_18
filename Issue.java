@@ -52,6 +52,10 @@ public class Issue {
         return comments;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public String getAssignee() {
         return assignee;
     }

@@ -57,7 +57,7 @@ public class IssueList {
                     throw new RuntimeException(e);
                 }
 
-                issues.add(new Issue(name, title, status, priority, date, reporter, assignee, fixer, comments));
+                issues.add(new Issue(ProjectName, name, title, status, priority, date, reporter, assignee, fixer, comments));
             }
 
         } catch (SQLException ex) {
