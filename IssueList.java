@@ -26,9 +26,9 @@ public class IssueList {
             issueStmt = connection.createStatement();
             issueRs = issueStmt.executeQuery(issueQuery);
             while(issueRs.next()){
-                String name = issueRs.getString("projectName");
-                String id = issueRs.getString("id");
                 String title = issueRs.getString("title");
+                String id = issueRs.getString("id");
+                String description = issueRs.getString("description");
                 Status status = Status.valueOf(issueRs.getString("status"));
                 Priority priority = Priority.valueOf(issueRs.getString("priority"));
                 String date = issueRs.getString("date");
@@ -57,7 +57,7 @@ public class IssueList {
                     throw new RuntimeException(e);
                 }
 
-                issues.add(new Issue(ProjectName, name, title, status, priority, date, reporter, assignee, fixer, comments));
+                issues.add(new Issue(ProjectName, title, description, status, priority, date, reporter, assignee, fixer, comments));
             }
 
         } catch (SQLException ex) {
@@ -83,6 +83,10 @@ public class IssueList {
 
     public int getSize(){
         return issues.size();
+    }
+
+    public Issue getTheIssue(int index){
+        return issues.get(index);
     }
 
 }
