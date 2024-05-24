@@ -26,7 +26,7 @@ class SelectionF extends JFrame{
                     new TesterFrame(proj.getName(project.getSelectedIndex()));
                 }
                 else if(category.getCategory().equals("PL")){
-                    new PLFrame(new Browse(issues));
+                    new PLFrame(proj.getName(project.getSelectedIndex()), category.getUserName());
                 }
                 else if(category.getCategory().equals("dev")){
                     new DevFrame();
