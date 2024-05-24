@@ -71,6 +71,13 @@ class AddIssueF extends JFrame{
         JPanel priority1 = new JPanel(); //combobox button
         JPanel priority2 = new JPanel(); // vacant panel
         JButton priority3 = new JButton("REPORT"); //ok button
+        priority3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
         JButton priority4 = new JButton("CANCEL"); //cancel button
         priority4.addActionListener(new ActionListener() {
             @Override

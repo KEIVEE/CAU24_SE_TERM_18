@@ -25,6 +25,7 @@ class MyFrame extends JFrame{
     JTextField id;
     JTextField password;
     JButton jok;
+    ArrayList<Issue> issues = new ArrayList<>();
 
     Project proj = new Project();
     public MyFrame(){
@@ -62,7 +63,9 @@ class MyFrame extends JFrame{
 
                 IDcheck = id.getText();
                 pwcheck = password.getText();
+
                 String loginQuery = "select * from account where id = '" + IDcheck + "'";
+                String issueQuery = "select * from issue";
                 String projectQuery = "select * from project";
 
                 try {
@@ -74,20 +77,11 @@ class MyFrame extends JFrame{
                     }
 
 
-                    Statement LoginStmt = connection.createStatement();
-                    ResultSet LoginRs = LoginStmt.executeQuery(loginQuery);
-                    while(LoginRs.next()){
-                        if(LoginRs.getString("password").equals(pwcheck)){
 
-                            if(LoginRs.getString("category").equals("admin")){
-                String query = "select password, category from account where id = '" + IDcheck + "'";
-                String issueQuery = "select * from issue";
-
-                try{
-                    ArrayList<Issue> issues = new ArrayList<>();
                     Statement issueStmt = connection.createStatement();
                     ResultSet issueRs = issueStmt.executeQuery(issueQuery);
                     while(issueRs.next()){
+                        String name = issueRs.getString("projectName");
                         String title = issueRs.getString("title");
                         Status status = Status.valueOf(issueRs.getString("status"));
                         Priority priority = Priority.valueOf(issueRs.getString("priority"));
@@ -98,33 +92,28 @@ class MyFrame extends JFrame{
 
                         ArrayList<Comment> comments = new ArrayList<>();
 
-                        issues.add(new Issue(title, status, priority, reporter, assignee, fixer, comments));
+                        issues.add(new Issue(name, title, status, priority, date, reporter, assignee, fixer, comments));
                     }
 
                     Statement stmt = connection.createStatement();
-                    ResultSet rs = stmt.executeQuery(query);
-                    while(rs.next()){
-                        if(rs.getString("password").equals(pwcheck)){
-                            if(rs.getString("category").equals("admin")){
+                    ResultSet loginRs = stmt.executeQuery(loginQuery);
+                    while(loginRs.next()) {
+                        if (loginRs.getString("password").equals(pwcheck)) {
+                            if (loginRs.getString("category").equals("admin")) {
                                 new AdminFrame();
-                            }
-                            else if(LoginRs.getString("category").equals("tester")){
-                                Tester testerUser = new Tester(LoginRs.getString("name"));
-                                new ProjectSelection(proj, testerUser);
-                            }
-                            else if(LoginRs.getString("category").equals("PL")){
-                                PL PLUser = new PL(LoginRs.getString("name"));
-                                new ProjectSelection(proj, PLUser);
-                            else if(rs.getString("category").equals("PL")){
-                                new PLFrame(new Browse(issues));
-                            }
-                            else if(LoginRs.getString("category").equals("dev")){
-                                Dev devUser = new Dev(LoginRs.getString("name"));
-                                new ProjectSelection(proj, devUser);
+                            } else if (loginRs.getString("category").equals("tester")) {
+                                Tester testerUser = new Tester(loginRs.getString("name"));
+                                new ProjectSelection(proj, issues, testerUser);
+                            } else if (loginRs.getString("category").equals("PL")) {
+                                PL PLUser = new PL(loginRs.getString("name"));
+                                new ProjectSelection(proj, issues, PLUser);
+                            } else if (loginRs.getString("category").equals("dev")) {
+                                Dev devUser = new Dev(loginRs.getString("name"));
+                                new ProjectSelection(proj, issues, devUser);
                             }
                             login_status = true;
-                        }//비번 틀린 곳을 구현해야 함
 
+                        }//비번 틀린 곳을 구현해야 함
                     }
 
 

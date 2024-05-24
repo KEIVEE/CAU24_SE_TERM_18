@@ -25,6 +25,18 @@ public class Issue {
         this.comments = comments;
     }
 
+    public Issue(String projectName,String title, Status status, Priority priority, String date, String reporter, String assignee, String fixer, ArrayList<Comment> comments){
+        this.projectName = projectName;
+        this.title = title;
+        this.status = status;
+        this.priority = priority;
+        this.date = date;
+        this.reporter = reporter;
+        this.assignee = assignee;
+        this.fixer = fixer;
+        this.comments = comments;
+    }
+
     public String getTitle(){
         return title;
     }

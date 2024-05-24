@@ -1,15 +1,18 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 class SelectionF extends JFrame{
     JComboBox<String> project = new JComboBox<>();
+    ArrayList<Issue> issues = new ArrayList<>();
 
-    SelectionF(Project proj, User category){
+    SelectionF(Project proj, ArrayList<Issue> issues, User category){
         super("Select Project");
         this.setSize(600, 200);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.issues = issues;
 
         for(int i = 0; i < proj.getSize(); i++){
             project.addItem(proj.getName(i));
@@ -23,7 +26,7 @@ class SelectionF extends JFrame{
                     new TesterFrame(proj.getName(project.getSelectedIndex()));
                 }
                 else if(category.getCategory().equals("PL")){
-                    new PLFrame();
+                    new PLFrame(new Browse(issues));
                 }
                 else if(category.getCategory().equals("dev")){
                     new DevFrame();
@@ -56,7 +59,7 @@ class SelectionF extends JFrame{
 
 }
 public class ProjectSelection {
-    public ProjectSelection(Project proj, User category){
-        new SelectionF(proj, category);
+    public ProjectSelection(Project proj, ArrayList<Issue> issues, User category){
+        new SelectionF(proj, issues, category);
     }
 }
