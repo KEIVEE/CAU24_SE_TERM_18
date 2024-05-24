@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Issue {
     private String projectName;
     private String title;
+    private String description;
     private Status status;
     private Priority priority;
     private String date;
@@ -13,21 +14,23 @@ public class Issue {
     private String fixer;
     private ArrayList<Comment> comments;
 
-    public Issue(String projectName,String title, Status status, Priority priority, String reporter, String assignee, String fixer, ArrayList<Comment> comments){
+    public Issue(String projectName,String title, String description, Status status, Priority priority, String reporter){
         this.projectName = projectName;
         this.title = title;
+        this.description = description;
         this.status = status;
         this.priority = priority;
         this.date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")); //지금 시간 저장.
         this.reporter = reporter;
-        this.assignee = assignee;
-        this.fixer = fixer;
-        this.comments = comments;
+        this.assignee = null;
+        this.fixer = null;
+        this.comments = new ArrayList<>();
     }
 
-    public Issue(String projectName,String title, Status status, Priority priority, String date, String reporter, String assignee, String fixer, ArrayList<Comment> comments){
+    public Issue(String projectName,String title, String description, Status status, Priority priority, String date, String reporter, String assignee, String fixer, ArrayList<Comment> comments){
         this.projectName = projectName;
         this.title = title;
+        this.description = description;
         this.status = status;
         this.priority = priority;
         this.date = date;

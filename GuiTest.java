@@ -83,6 +83,7 @@ class MyFrame extends JFrame{
                     while(issueRs.next()){
                         String name = issueRs.getString("projectName");
                         String title = issueRs.getString("title");
+                        String description = issueRs.getString("description");
                         Status status = Status.valueOf(issueRs.getString("status"));
                         Priority priority = Priority.valueOf(issueRs.getString("priority"));
                         String date = issueRs.getString("date");
@@ -92,7 +93,7 @@ class MyFrame extends JFrame{
 
                         ArrayList<Comment> comments = new ArrayList<>();
 
-                        issues.add(new Issue(name, title, status, priority, date, reporter, assignee, fixer, comments));
+                        issues.add(new Issue(name, title, description, status, priority, date, reporter, assignee, fixer, comments));
                     }
 
                     Statement stmt = connection.createStatement();

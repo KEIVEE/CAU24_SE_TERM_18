@@ -3,14 +3,19 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 
 class TesterF extends JFrame {
     String projectName;
-    public TesterF(String projectName){
+    String userName;
+    public TesterF(String projectName, String userName){
         super("ISSUE HANDLING");
         this.projectName = projectName;
+        this.userName = userName;
         this.setSize(900, 600);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -24,7 +29,7 @@ class TesterF extends JFrame {
         addIssueButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new AddIssueF(projectName);
+                new AddIssueF(projectName, userName);
             }
         });
         addIssuePane.add(addIssueButton);
@@ -38,19 +43,19 @@ class TesterF extends JFrame {
 class AddIssueF extends JFrame{
     JComboBox<Priority> selectPriority = new JComboBox<>();
 
-    AddIssueF(String projectName){
+    AddIssueF(String projectName, String userName){
         super("REPORT ISSUE");
         this.setSize(900, 600);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel pane = reportIssuePanel(projectName);
+        JPanel pane = reportIssuePanel(projectName, userName);
         add(pane);
         repaint();
         revalidate();
     }
 
-    JPanel reportIssuePanel(String projectName){
+    JPanel reportIssuePanel(String projectName, String userName){
         JPanel bigPanel = new JPanel(new BorderLayout());
 
         JPanel title = new JPanel(new GridLayout(1, 2));
@@ -61,7 +66,7 @@ class AddIssueF extends JFrame{
         bigPanel.add(title, BorderLayout.NORTH);
 
         JPanel description = new JPanel(new BorderLayout());
-        JLabel description1 = new JLabel("Description");
+        JLabel description1 = new JLabel("Description(up to 500 characters)");
         JTextField description2 = new JTextField(500);
         description.add(description1, BorderLayout.NORTH);
         description.add(description2, BorderLayout.CENTER);
@@ -74,6 +79,57 @@ class AddIssueF extends JFrame{
         priority3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                String issueTitle = title2.getText();
+                String issueDescription = description2.getText();
+                Priority issuePriority = selectPriority.getItemAt(selectPriority.getSelectedIndex());
+
+
+
+                String url = "jdbc:mysql:aws://sedb.cf866m2eqkwj.us-east-1.rds.amazonaws.com/sedb";
+                String serverUserName = "admin";
+                String serverPassword = "00000000";
+
+                String query = "insert into issue values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                Connection connection = null;
+                try {
+                    connection = DriverManager.getConnection(url, serverUserName, serverPassword);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                PreparedStatement pstmt = null;
+
+                try{
+                    pstmt = connection.prepareStatement(query);
+
+                    Issue newIssue = new Issue(projectName, issueTitle, issueDescription, Status.NEW, issuePriority, userName);
+                    pstmt.setString(1, projectName);
+                    pstmt.setString(2, projectName + newIssue.getDate());
+                    pstmt.setString(3, issueTitle);
+                    pstmt.setString(4, issueDescription);
+                    pstmt.setString(5, Status.NEW.toString());
+                    pstmt.setString(6, issuePriority.toString());
+                    pstmt.setString(7, newIssue.getDate());
+                    pstmt.setString(8, userName);
+                    pstmt.setString(9, null);
+                    pstmt.setString(10, null);
+
+                    pstmt.executeUpdate();
+
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                repaint();
+                revalidate();
+                try {
+                    pstmt.close();
+                    connection.close();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                dispose();
 
             }
         });
@@ -102,15 +158,16 @@ class AddIssueF extends JFrame{
         bigPanel.add(new JLabel("  "), BorderLayout.WEST);
         bigPanel.add(priority, BorderLayout.SOUTH);
 
-
+        repaint();
+        revalidate();
         return bigPanel;
     }
 }
 
 public class TesterFrame {
     TesterF testerF;
-    TesterFrame(String projectName){
-        testerF = new TesterF(projectName);
+    TesterFrame(String projectName, String userName){
+        testerF = new TesterF(projectName, userName);
     }
 }
 
