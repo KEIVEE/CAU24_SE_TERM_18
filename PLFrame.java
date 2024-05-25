@@ -15,10 +15,10 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
         this.setSize(900, 600);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        add(createTab());
+        add(createTab(projectName, userName));
     }
 
-    public JTabbedPane createTab(){
+    public JTabbedPane createTab(String projectName, String userName){
         JTabbedPane pane = new JTabbedPane();
         GridBagLayout gb = new GridBagLayout();
 
@@ -40,19 +40,30 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
 
         for(int i = 0; i < issues.getSize(); i++){
             //이슈들을 돌아보면서,
-            JPanel issuePanel = issuePanel(i);
+            JPanel issuePanel = issuePanel(i,projectName, userName);
             issuesPanel.add(issuePanel, constraints);
             // 모든 이슈를 넣을 패널에는 그냥 다 넣고
             if(issues.getTheIssue(i).getStatus().equals(Status.NEW)){
                 //새 이슈들을 넣을 패널에는 status 가 NEW 인 것을 넣고
-                newIssuesPanel.add(issuePanel(i), constraints);
+                newIssuesPanel.add(issuePanel(i, projectName, userName), constraints);
             }
             else if(issues.getTheIssue(i).getStatus().equals(Status.RESOLVED)){
                 //풀린 이슈들을 넣을 패널에는 status 가 RESOLVED 인 것을 넣을 것이다
-                resolvedIssuesPanel.add(issuePanel(i), constraints);
+                resolvedIssuesPanel.add(issuePanel(i,projectName, userName), constraints);
             }
         }
+        JButton refresh = new JButton("refresh");
+        refresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PLF t = new PLF(projectName, userName);
+                dispose();
 
+            }
+        });
+
+        newIssuesPanel.add(refresh,constraints);
+        resolvedIssuesPanel.add(refresh,constraints);
 
         JScrollPane totalPane = new JScrollPane(issuesPanel);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
         //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.
@@ -66,7 +77,7 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
         return pane;
     }
 
-    JPanel issuePanel(int index){ //이슈 하나에 대한 패널
+    JPanel issuePanel(int index,String projectName, String userName){ //이슈 하나에 대한 패널
         Issue theIssue = issues.browseAll().get(index);
         JPanel panel = new JPanel(new GridLayout(1, 5));
         panel.add(new JLabel(theIssue.getTitle()));
@@ -87,7 +98,7 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
                     JFrame newFrame = new JFrame("Issue Information");//새 창이 뜨고
                     newFrame.setSize(900, 600);
                     newFrame.setVisible(true);
-                    newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     JPanel totalPane = new JPanel(new BorderLayout());
 
                     JPanel titlePane = new JPanel();
@@ -115,10 +126,100 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
                         JFrame commentFrame = new JFrame("comments");//새 창이 뜨고
                         commentFrame.setSize(900, 600);
                         commentFrame.setVisible(true);
-                        commentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        commentFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         JPanel totalPane = new JPanel(new BorderLayout());
 
+                        //코멘트 메시지 추가 관련 코드
+                        JPanel addClose = new JPanel(new GridLayout(1,2));
+                        JButton addcomment = new JButton("add comment");
                         JButton close = new JButton("close");
+                        addClose.add(addcomment);
+                        addClose.add(close);
+
+                        addcomment.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                JFrame msgcomment = new JFrame("message");
+                                msgcomment.setSize(900, 600);
+                                msgcomment.setVisible(true);
+
+                                JPanel msgbigpanel = new JPanel(new BorderLayout());
+
+                                JPanel msg = new JPanel(new BorderLayout());
+                                JLabel msg1 = new JLabel("message(up to 500 characters)");
+                                JTextField msg2 = new JTextField(500);
+                                msg.add(msg1,BorderLayout.NORTH);
+                                msg.add(msg2,BorderLayout.CENTER);
+
+                                JPanel okcan = new JPanel(new GridLayout(1,2));
+                                JButton ok = new JButton("LEAVE MESSAGE");
+                                JButton cancel = new JButton("CANCEL");
+
+                                ok.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+
+                                        String issueComment = msg2.getText();
+
+                                        String url = "jdbc:mysql:aws://sedb.cf866m2eqkwj.us-east-1.rds.amazonaws.com/sedb";
+                                        String serverUserName = "admin";
+                                        String serverPassword = "00000000";
+
+                                        String commentquery =  "insert into comment values (?, ?, ?, ?, ?)";
+
+                                        Connection connection;
+                                        try{
+                                            connection = DriverManager.getConnection(url, serverUserName, serverPassword);//디비에 연결
+
+
+                                            PreparedStatement pstmtcomment;
+
+
+                                            pstmtcomment = connection.prepareStatement(commentquery);
+                                            //id,issue_id, content, userName,createdDate
+
+
+                                            Comment newComment = new Comment(issueComment, userName);
+
+
+                                            pstmtcomment.setString(1,projectName + theIssue.getShortDate() + newComment.getShortDate());
+                                            pstmtcomment.setString(2,projectName + theIssue.getShortDate());
+                                            pstmtcomment.setString(3, newComment.getContent());
+                                            pstmtcomment.setString(4,userName);
+                                            pstmtcomment.setString(5, newComment.getDate());
+
+
+                                            pstmtcomment.executeUpdate();
+
+                                            pstmtcomment.close();
+                                            connection.close();
+
+                                        } catch (SQLException ex) {
+                                            throw new RuntimeException(ex);
+                                        }
+
+                                        repaint();
+                                        revalidate();
+
+                                        msgcomment.dispose();//등록했으면 창 닫기
+                                    }
+                                });
+                                cancel.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        msgcomment.dispose();
+                                    }
+                                });
+                                okcan.add(ok);
+                                okcan.add(cancel);
+                                msgbigpanel.add(msg,BorderLayout.CENTER);
+                                msgbigpanel.add(okcan,BorderLayout.SOUTH);
+                                msgcomment.add(msgbigpanel);
+
+                                msgcomment.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                            }
+                        });
+
                         close.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
@@ -141,7 +242,7 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
                             //커멘트 개수만큼 커멘트 페인을 추가한다.
                         }
                         totalPane.add(commentsPane, BorderLayout.CENTER);
-                        totalPane.add(close, BorderLayout.SOUTH);
+                        totalPane.add(addClose, BorderLayout.SOUTH);
                         commentFrame.add(totalPane);
                         repaint();
                         revalidate();
@@ -306,6 +407,7 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
     }
 
 }
+
 
 public class PLFrame {
     PLF plF;

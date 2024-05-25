@@ -40,13 +40,23 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
 
 
         for(int i = 0; i < issues.getSize(); i++){ // 이 프로젝트의 이슈 중에서
-            if(issues.getTheIssue(i).getAssignee()!=null && issues.getTheIssue(i).getAssignee().equals(userName)){
+            if(issues.getTheIssue(i).getAssignee()!=null && issues.getTheIssue(i).getAssignee().equals(userName) && issues.getTheIssue(i).getStatus().equals(Status.ASSIGNED)){
                 //어사이니가 널이 아니고 본인이면: 앞의 조건이 없으면 오류가 난다. 이슈 생성 시에는 어사이니가 없어서 null 이기 때문임
 
                 JPanel issuePanel = issuePanel(i); //그 이슈에 대한 패널을 만들고
                 assignedIssuePane.add(issuePanel, constraints); //화면에 추가함.
             }
         }
+        JButton refresh = new JButton("refresh");
+        refresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DevF t = new DevF(projectName, userName);
+                dispose();
+
+            }
+        });
+        assignedIssuePane.add(refresh, constraints);
         pane.addTab("내 이슈", assignedIssuePane);
         return pane;
     }
@@ -71,7 +81,7 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
                 JFrame newFrame = new JFrame("Issue Information");
                 newFrame.setSize(900, 600);
                 newFrame.setVisible(true);
-                newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 JPanel totalPane = new JPanel(new BorderLayout());
 
                 JPanel titlePane = new JPanel();
@@ -82,8 +92,39 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
                 JLabel description1 = new JLabel("Description: \r\n" + theIssue.getDescription());//설명 부분
                 //뉴라인으로 넘어가지 않는 문제가 있다. 검색 후 해결해야 함
                 descriptionPane.add(description1);
-
+                JButton fixed = new JButton("fixed");
                 JButton justClose = new JButton("cancel"); //아무것도 하지 않고 창 닫는 버튼.
+                String fixerquery = "update issue set fixer = ?, status = 'FIXED' where id = ?";
+                fixed.addActionListener(new ActionListener() { //고치면 fixer에 dev가 들어가야되고, 상태를 fixed로 바꿈
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                        PreparedStatement updateStatement;
+                        try {
+
+                            String url = "jdbc:mysql:aws://sedb.cf866m2eqkwj.us-east-1.rds.amazonaws.com/sedb";
+                            String serverUserName = "admin";
+                            String serverPassword = "00000000";
+                            Connection connection;
+                            connection = DriverManager.getConnection(url, serverUserName, serverPassword);
+
+                            updateStatement = connection.prepareStatement(fixerquery);
+                            updateStatement.setString(1, userName);
+                            updateStatement.setString(2, projectName + theIssue.getShortDate());
+                            updateStatement.executeUpdate();
+
+                            updateStatement.close();
+                            connection.close();
+
+
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
+                        newFrame.dispose();
+                    }
+                });
+
                 justClose.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -98,7 +139,7 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
                         JFrame commentFrame = new JFrame("comments");//또 새 창을 띄운다.
                         commentFrame.setSize(900, 600);
                         commentFrame.setVisible(true);
-                        commentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        commentFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         JPanel totalPane = new JPanel(new BorderLayout());
 
                         JButton close = new JButton("close"); //새 창에서 close 버튼을 누르면
@@ -139,7 +180,7 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
                         JFrame leaveCommentFrame = new JFrame("leave comment"); //새 창이 생김
                         leaveCommentFrame.setSize(900, 600);
                         leaveCommentFrame.setVisible(true);
-                        leaveCommentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        leaveCommentFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
                         JPanel totalPane = new JPanel(new BorderLayout());
                         JTextField content = new JTextField(500);
@@ -220,6 +261,7 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
                 JPanel fixedPane = new JPanel();
                 fixedPane.add(commentButton);
                 fixedPane.add(seeComments);
+                fixedPane.add(fixed);
                 fixedPane.add(justClose);
                 totalPane.add(fixedPane, BorderLayout.SOUTH);
 

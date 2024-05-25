@@ -58,12 +58,26 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
             if(issues.getTheIssue(i).getReporter().equals(userName)){
                 JPanel issuePanel = issuePanel(i);//리포터가 본인 이름과 같다면 그걸 추가하고
                 myIssuePane.add(issuePanel, constraints);
+
                 if(issues.getTheIssue(i).getStatus().equals(Status.FIXED)){
                     myFixedIssuePane.add(issuePanel(i), constraints);//그 이슈의 status 가 픽스드라면 픽스드에도 추가한다.
                 }
             }
         }
+        JButton refresh = new JButton("refresh");
+        refresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TesterF t = new TesterF(projectName, userName);
+                dispose();
+
+            }
+        });
+        myIssuePane.add(refresh,constraints);
+        myFixedIssuePane.add(refresh,constraints);
+
         pane.addTab("내가 올린 이슈", myIssuePane);
+
         pane.addTab("내가 올린 고쳐진 이슈", myFixedIssuePane);
 
         return pane;
@@ -90,7 +104,7 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
                 JFrame newFrame = new JFrame("Issue Information");//새 창이 나타나고: 상세정보창임
                 newFrame.setSize(900, 600);
                 newFrame.setVisible(true);
-                newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 JPanel totalPane = new JPanel(new BorderLayout());
 
                 JPanel titlePane = new JPanel();
@@ -118,7 +132,7 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
                         JFrame commentFrame = new JFrame("comments");
                         commentFrame.setSize(900, 600);
                         commentFrame.setVisible(true);
-                        commentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        commentFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         JPanel totalPane = new JPanel(new BorderLayout());
 
                         JButton close = new JButton("close");
@@ -244,7 +258,7 @@ class AddIssueF extends JFrame{ //이슈 추가하기를 눌렀을 때 나오는
         super("REPORT ISSUE");
         this.setSize(900, 600);
         this.setVisible(true);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel pane = reportIssuePanel(projectName, userName); //이슈 등록에 대한 패널
         add(pane);
@@ -262,12 +276,24 @@ class AddIssueF extends JFrame{ //이슈 추가하기를 눌렀을 때 나오는
         title.add(title2);
         bigPanel.add(title, BorderLayout.NORTH);
 
+
+        JPanel middlePanel = new JPanel(new GridLayout(2,1));  //description과 comment를 담을 중간 패널
         JPanel description = new JPanel(new BorderLayout());
         JLabel description1 = new JLabel("Description(up to 500 characters)");//이슈 내용
         JTextField description2 = new JTextField(500);//최대 500자
         description.add(description1, BorderLayout.NORTH);
         description.add(description2, BorderLayout.CENTER);
-        bigPanel.add(description, BorderLayout.CENTER);
+        middlePanel.add(description);
+
+        JPanel comment = new JPanel(new BorderLayout());
+        JLabel comment1 = new JLabel("Comment(up to 500 characters)");
+        JTextField comment2 = new JTextField(500);
+        comment.add(comment1,BorderLayout.NORTH);
+        comment.add(comment2,BorderLayout.CENTER);
+        middlePanel.add(comment);
+
+        bigPanel.add(middlePanel,BorderLayout.CENTER); //중간 패널을 bigpanel의 center부분에 위치
+
 
         JPanel priority = new JPanel(new GridLayout(1, 4));
         JPanel priority1 = new JPanel(); //콤보박스가 있는 곳
@@ -279,6 +305,7 @@ class AddIssueF extends JFrame{ //이슈 추가하기를 눌렀을 때 나오는
 
                 String issueTitle = title2.getText();//적은 제목과
                 String issueDescription = description2.getText();//적은 내용과
+                String issueComment = comment2.getText();
                 Priority issuePriority = selectPriority.getItemAt(selectPriority.getSelectedIndex());//고른 우선순위를 가지고
 
                 String url = "jdbc:mysql:aws://sedb.cf866m2eqkwj.us-east-1.rds.amazonaws.com/sedb";
@@ -286,6 +313,9 @@ class AddIssueF extends JFrame{ //이슈 추가하기를 눌렀을 때 나오는
                 String serverPassword = "00000000";
 
                 String query = "insert into issue values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                String commentquery =  "insert into comment values (?, ?, ?, ?, ?)";
+
+
                 //새 이슈를 등록한다는 쿼리
 
                 Connection connection;
@@ -293,14 +323,18 @@ class AddIssueF extends JFrame{ //이슈 추가하기를 눌렀을 때 나오는
                     connection = DriverManager.getConnection(url, serverUserName, serverPassword);//디비에 연결
 
                     PreparedStatement pstmt;
-
+                    PreparedStatement pstmtcomment;
 
                     pstmt = connection.prepareStatement(query);
+                    pstmtcomment = connection.prepareStatement(commentquery);
+                    //id,issue_id, content, userName,createdDate
 
                     Issue newIssue = new Issue(projectName, issueTitle, issueDescription, Status.NEW, issuePriority, userName);
+                    Comment newComment = new Comment(issueComment, userName);
+
                     //새 이슈를 만들고
                     pstmt.setString(1, projectName);
-                    pstmt.setString(2, projectName + newIssue.getShortDate());
+                    pstmt.setString(2, projectName + newIssue.getShortDate()); //issue의 id
                     pstmt.setString(3, issueTitle);
                     pstmt.setString(4, issueDescription);
                     pstmt.setString(5, Status.NEW.toString());
@@ -311,10 +345,19 @@ class AddIssueF extends JFrame{ //이슈 추가하기를 눌렀을 때 나오는
                     pstmt.setString(10, null);
                     //디비에 이슈를 추가한다. 어사이니와 픽서는 처음에는 null 로 둘 것이다
 
+                    pstmtcomment.setString(1,projectName + newIssue.getShortDate() + newComment.getShortDate());
+                    pstmtcomment.setString(2,projectName + newIssue.getShortDate());
+                    pstmtcomment.setString(3, newComment.getContent());
+                    pstmtcomment.setString(4,userName);
+                    pstmtcomment.setString(5, newComment.getDate());
+
                     pstmt.executeUpdate();
+                    pstmtcomment.executeUpdate();
 
                     pstmt.close();
+                    pstmtcomment.close();
                     connection.close();
+
 
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
