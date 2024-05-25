@@ -90,10 +90,53 @@ class DevF extends JFrame {
                 descriptionPane.add(description1);
 
                 JButton justClose = new JButton("cancel");
+
+
+
                 justClose.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         newFrame.dispose();
+                    }
+                });
+
+                JButton seeComments = new JButton("see comments");
+                seeComments.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        JFrame commentFrame = new JFrame("comments");
+                        commentFrame.setSize(900, 600);
+                        commentFrame.setVisible(true);
+                        commentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        JPanel totalPane = new JPanel(new BorderLayout());
+
+                        JButton close = new JButton("close");
+                        close.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                commentFrame.dispose();
+                            }
+                        });
+
+                        JPanel commentsPane = new JPanel();
+                        GridBagLayout gb = new GridBagLayout();
+                        GridBagConstraints constraints = new GridBagConstraints();
+
+                        commentsPane.setLayout(gb);
+
+                        constraints.gridx = 0;
+                        constraints.gridy = GridBagConstraints.RELATIVE;
+                        constraints.fill = GridBagConstraints.VERTICAL;
+
+                        for(int i = 0; i < theIssue.getComments().size(); i++){
+                            commentsPane.add(commentPane(theIssue, i), constraints);
+                        }
+                        totalPane.add(commentsPane, BorderLayout.CENTER);
+                        totalPane.add(close, BorderLayout.SOUTH);
+                        commentFrame.add(totalPane);
+                        repaint();
+                        revalidate();
+
                     }
                 });
 
@@ -177,6 +220,7 @@ class DevF extends JFrame {
                 totalPane.add(descriptionPane, BorderLayout.CENTER);
                 JPanel fixedPane = new JPanel();
                 fixedPane.add(commentButton);
+                fixedPane.add(seeComments);
                 fixedPane.add(justClose);
                 totalPane.add(fixedPane, BorderLayout.SOUTH);
 
@@ -188,6 +232,32 @@ class DevF extends JFrame {
         });
 
         return panel;
+    }
+
+    JPanel commentPane(Issue theIssue, int index){
+        JPanel totalPane = new JPanel(new BorderLayout());
+        LineBorder b1 = new LineBorder(Color.BLACK, 2);
+        totalPane.setBorder(b1);
+        totalPane.setPreferredSize(new Dimension(800, 100));
+        totalPane.setMaximumSize(new Dimension(800, 100));
+        totalPane.setMinimumSize(new Dimension(800, 100));
+
+        LineBorder b2 = new LineBorder(Color.GRAY, 1);
+
+        JLabel user = new JLabel(theIssue.getComments().get(index).getUserName());
+        user.setBorder(b2);
+
+        JLabel content = new JLabel(theIssue.getComments().get(index).getContent());
+        content.setBorder(b2);
+
+        JLabel date = new JLabel(theIssue.getComments().get(index).getDate());
+        date.setBorder(b2);
+
+        totalPane.add(user, BorderLayout.WEST);
+        totalPane.add(content, BorderLayout.CENTER);
+        totalPane.add(date, BorderLayout.SOUTH);
+
+        return totalPane;
     }
 
 }

@@ -111,6 +111,47 @@ class PLF extends JFrame {
                     }
                 });
 
+
+                JButton seeComments = new JButton("see comments");
+                seeComments.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        JFrame commentFrame = new JFrame("comments");
+                        commentFrame.setSize(900, 600);
+                        commentFrame.setVisible(true);
+                        commentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        JPanel totalPane = new JPanel(new BorderLayout());
+
+                        JButton close = new JButton("close");
+                        close.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                commentFrame.dispose();
+                            }
+                        });
+
+                        JPanel commentsPane = new JPanel();
+                        GridBagLayout gb = new GridBagLayout();
+                        GridBagConstraints constraints = new GridBagConstraints();
+
+                        commentsPane.setLayout(gb);
+
+                        constraints.gridx = 0;
+                        constraints.gridy = GridBagConstraints.RELATIVE;
+                        constraints.fill = GridBagConstraints.VERTICAL;
+
+                        for(int i = 0; i < theIssue.getComments().size(); i++){
+                            commentsPane.add(commentPane(theIssue, i), constraints);
+                        }
+                        totalPane.add(commentsPane, BorderLayout.CENTER);
+                        totalPane.add(close, BorderLayout.SOUTH);
+                        commentFrame.add(totalPane);
+                        repaint();
+                        revalidate();
+
+                    }
+                });
+
                 if (theIssue.getStatus().equals(Status.NEW)) {
                     JPanel assignPane = new JPanel();
                     JComboBox<String> devs = new JComboBox<>();
@@ -174,6 +215,7 @@ class PLF extends JFrame {
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
+                    assignPane.add(seeComments);
                     assignPane.add(devs);
                     assignPane.add(assignButton);
                     assignPane.add(justClose);
@@ -220,12 +262,16 @@ class PLF extends JFrame {
 
                     });
 
+                    closedPane.add(seeComments);
                     closedPane.add(makeClose);
                     closedPane.add(justClose);
                     totalPane.add(closedPane, BorderLayout.SOUTH);
                 }
                 else{
-                    totalPane.add(justClose, BorderLayout.SOUTH);
+                    JPanel southPane = new JPanel();
+                    southPane.add(seeComments);
+                    southPane.add(justClose);
+                    totalPane.add(southPane, BorderLayout.SOUTH);
                 }
                 totalPane.add(titlePane, BorderLayout.NORTH);
                 totalPane.add(descriptionPane, BorderLayout.CENTER);
@@ -237,6 +283,32 @@ class PLF extends JFrame {
         });
 
         return panel;
+    }
+
+    JPanel commentPane(Issue theIssue, int index){
+        JPanel totalPane = new JPanel(new BorderLayout());
+        LineBorder b1 = new LineBorder(Color.BLACK, 2);
+        totalPane.setBorder(b1);
+        totalPane.setPreferredSize(new Dimension(800, 100));
+        totalPane.setMaximumSize(new Dimension(800, 100));
+        totalPane.setMinimumSize(new Dimension(800, 100));
+
+        LineBorder b2 = new LineBorder(Color.GRAY, 1);
+
+        JLabel user = new JLabel(theIssue.getComments().get(index).getUserName());
+        user.setBorder(b2);
+
+        JLabel content = new JLabel(theIssue.getComments().get(index).getContent());
+        content.setBorder(b2);
+
+        JLabel date = new JLabel(theIssue.getComments().get(index).getDate());
+        date.setBorder(b2);
+
+        totalPane.add(user, BorderLayout.WEST);
+        totalPane.add(content, BorderLayout.CENTER);
+        totalPane.add(date, BorderLayout.SOUTH);
+
+        return totalPane;
     }
 
 }
