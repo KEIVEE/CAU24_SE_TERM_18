@@ -3,5 +3,6 @@ public enum Status {
     ASSIGNED,
     RESOLVED,
     CLOSED,
-    REOPENED
+    REOPENED,
+    FIXED
 }
