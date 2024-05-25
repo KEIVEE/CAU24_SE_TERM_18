@@ -6,18 +6,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
-import java.time.LocalDateTime;
 
-class DevF extends JFrame {
-    String projectName;
-    String userName;
-    private IssueList issues;
+class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨는 창이다
+    String projectName; //지금 접속한 프로젝트 이름
+    String userName; //지금 접속한 데브의 계정 이름
+    private IssueList issues; //지금 접속한 프로젝트의 이슈들
 
     public DevF(String projectName, String userName){
         super("ISSUE HANDLING");
         this.projectName = projectName;
         this.userName = userName;
-        this.issues = new IssueList(projectName);
+        this.issues = new IssueList(projectName);//프로젝트 이름에 따라서 지금 있는 이슈들을 저장함
         this.setSize(900, 600);
         this.setVisible(true);
 
@@ -29,7 +28,7 @@ class DevF extends JFrame {
         JTabbedPane pane = new JTabbedPane();
         JPanel assignedIssuePane = new JPanel();
 
-        GridBagLayout gb = new GridBagLayout();
+        GridBagLayout gb = new GridBagLayout(); //레이아웃: 그리드백 레이아웃 사용
         GridBagConstraints constraints = new GridBagConstraints();
 
         assignedIssuePane.setLayout(gb);
@@ -37,18 +36,22 @@ class DevF extends JFrame {
         constraints.gridx = 0;
         constraints.gridy = GridBagConstraints.RELATIVE;
         constraints.fill = GridBagConstraints.VERTICAL;
+        //패널들을 아래 방향으로 추가되게 한다.
 
-        for(int i = 0; i < issues.getSize(); i++){
+
+        for(int i = 0; i < issues.getSize(); i++){ // 이 프로젝트의 이슈 중에서
             if(issues.getTheIssue(i).getAssignee()!=null && issues.getTheIssue(i).getAssignee().equals(userName)){
-                JPanel issuePanel = issuePanel(i);
-                assignedIssuePane.add(issuePanel, constraints);
+                //어사이니가 널이 아니고 본인이면: 앞의 조건이 없으면 오류가 난다. 이슈 생성 시에는 어사이니가 없어서 null 이기 때문임
+
+                JPanel issuePanel = issuePanel(i); //그 이슈에 대한 패널을 만들고
+                assignedIssuePane.add(issuePanel, constraints); //화면에 추가함.
             }
         }
         pane.addTab("내 이슈", assignedIssuePane);
         return pane;
     }
-    JPanel issuePanel(int index){
-        Issue theIssue = issues.browseAll().get(index);
+    JPanel issuePanel(int index){ //이슈 하나에 대한 간단한 정보를 가지고 있는 패널이다.
+        Issue theIssue = issues.browseAll().get(index); //몇 번째 이슈인지 받아옴
         JPanel panel = new JPanel(new GridLayout(1, 5));
         panel.add(new JLabel(theIssue.getTitle()));
         panel.add(new JLabel(theIssue.getStatus().toString()));
@@ -56,25 +59,15 @@ class DevF extends JFrame {
         panel.add(new JLabel(theIssue.getDate()));
         panel.add(new JLabel(theIssue.getReporter()));
 
-        LineBorder b1 = new LineBorder(Color.BLACK, 2);
+        LineBorder b1 = new LineBorder(Color.BLACK, 2);//이슈끼리 구분하기 위해 보더가 필요하다
         panel.setBorder(b1);
         panel.setPreferredSize(new Dimension(800, 100));
         panel.setMaximumSize(new Dimension(800, 100));
         panel.setMinimumSize(new Dimension(800, 100));
 
-        panel.addMouseListener(new MouseAdapter() {
+        panel.addMouseListener(new MouseAdapter() { //이 이슈 패널을 클릭하면, 상세 정보를 띄울 것이다.
             @Override
             public void mouseClicked(MouseEvent e) {
-                String url = "jdbc:mysql:aws://sedb.cf866m2eqkwj.us-east-1.rds.amazonaws.com/sedb";
-                String serverUserName = "admin";
-                String serverPassword = "00000000";
-                Connection connection = null;
-                try {
-                    connection = DriverManager.getConnection(url, serverUserName, serverPassword);
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-
                 JFrame newFrame = new JFrame("Issue Information");
                 newFrame.setSize(900, 600);
                 newFrame.setVisible(true);
@@ -82,17 +75,15 @@ class DevF extends JFrame {
                 JPanel totalPane = new JPanel(new BorderLayout());
 
                 JPanel titlePane = new JPanel();
-                JLabel title1 = new JLabel("title: " + theIssue.getTitle());
+                JLabel title1 = new JLabel("title: " + theIssue.getTitle()); //제목 부분
                 titlePane.add(title1);
 
                 JPanel descriptionPane = new JPanel();
-                JLabel description1 = new JLabel("Description: \r\n" + theIssue.getDescription());
+                JLabel description1 = new JLabel("Description: \r\n" + theIssue.getDescription());//설명 부분
+                //뉴라인으로 넘어가지 않는 문제가 있다. 검색 후 해결해야 함
                 descriptionPane.add(description1);
 
-                JButton justClose = new JButton("cancel");
-
-
-
+                JButton justClose = new JButton("cancel"); //아무것도 하지 않고 창 닫는 버튼.
                 justClose.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -100,25 +91,25 @@ class DevF extends JFrame {
                     }
                 });
 
-                JButton seeComments = new JButton("see comments");
-                seeComments.addActionListener(new ActionListener() {
+                JButton seeComments = new JButton("see comments"); //이슈에 달린 커멘트를 보게 할 버튼.
+                seeComments.addActionListener(new ActionListener() {//이 버튼을 누르면,
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        JFrame commentFrame = new JFrame("comments");
+                        JFrame commentFrame = new JFrame("comments");//또 새 창을 띄운다.
                         commentFrame.setSize(900, 600);
                         commentFrame.setVisible(true);
                         commentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                         JPanel totalPane = new JPanel(new BorderLayout());
 
-                        JButton close = new JButton("close");
+                        JButton close = new JButton("close"); //새 창에서 close 버튼을 누르면
                         close.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                commentFrame.dispose();
+                                commentFrame.dispose();//그 창만 꺼진다.
                             }
                         });
 
-                        JPanel commentsPane = new JPanel();
+                        JPanel commentsPane = new JPanel(); //커멘트들을 보이게 할 패널
                         GridBagLayout gb = new GridBagLayout();
                         GridBagConstraints constraints = new GridBagConstraints();
 
@@ -127,10 +118,11 @@ class DevF extends JFrame {
                         constraints.gridx = 0;
                         constraints.gridy = GridBagConstraints.RELATIVE;
                         constraints.fill = GridBagConstraints.VERTICAL;
+                        //이슈들 보이게 하는 패널과 똑같이 그리드백 레이아웃을 적용한다
 
                         for(int i = 0; i < theIssue.getComments().size(); i++){
                             commentsPane.add(commentPane(theIssue, i), constraints);
-                        }
+                        }//이슈에 달린 커멘트의 개수만큼 추가하기.
                         totalPane.add(commentsPane, BorderLayout.CENTER);
                         totalPane.add(close, BorderLayout.SOUTH);
                         commentFrame.add(totalPane);
@@ -140,11 +132,11 @@ class DevF extends JFrame {
                     }
                 });
 
-                JButton commentButton = new JButton("leave comment");
-                commentButton.addActionListener(new ActionListener() {
+                JButton commentButton = new JButton("leave comment"); //데브는 커멘트를 적을 수 있다.
+                commentButton.addActionListener(new ActionListener() { //이 커멘트 적기 버튼을 누르면,
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        JFrame leaveCommentFrame = new JFrame("leave comment");
+                        JFrame leaveCommentFrame = new JFrame("leave comment"); //새 창이 생김
                         leaveCommentFrame.setSize(900, 600);
                         leaveCommentFrame.setVisible(true);
                         leaveCommentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -155,49 +147,56 @@ class DevF extends JFrame {
                         JButton leaveCommentButton = new JButton("post");
                         JButton closeButton = new JButton("cancel");
 
-                        closeButton.addActionListener(new ActionListener() {
+                        closeButton.addActionListener(new ActionListener() {//캔슬 버튼을 누르면
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                leaveCommentFrame.dispose();
+                                leaveCommentFrame.dispose();//이 창은 그냥 닫히게 도고
                             }
                         });
 
-                        leaveCommentButton.addActionListener(new ActionListener() {
+                        leaveCommentButton.addActionListener(new ActionListener() { // 등록 버튼을 누르면
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                PreparedStatement insertStatement = null;
-                                Statement getIssueIdStatement = null;
+                                PreparedStatement insertStatement;
+                                Statement getIssueIdStatement;
                                 try {
                                     String insertQuery = "insert into comment values (?, ?, ?, ?, ?)";
+                                    //새 커멘트를 작성할 쿼리.
                                     String getIssueIdQuery = "select id from issue where date = '" + theIssue.getDate() + "'";
+                                    //새 커멘트를 추가할 쿼리에는 해당 이슈의 아이디가 필요하다.
+                                    //시간은 초 단위로 같지 않는 한 겹치지 않으니 시간을 기준으로 검색.
+                                    //뜻: 이 시간에 올라온 이슈의 아이디를 골라라
                                     String url = "jdbc:mysql:aws://sedb.cf866m2eqkwj.us-east-1.rds.amazonaws.com/sedb";
                                     String serverUserName = "admin";
                                     String serverPassword = "00000000";
-                                    Connection connection = null;
-                                    connection = DriverManager.getConnection(url, serverUserName, serverPassword);
+                                    Connection connection;
+                                    connection = DriverManager.getConnection(url, serverUserName, serverPassword);//연결
 
                                     getIssueIdStatement = connection.createStatement();
-                                    ResultSet rs = getIssueIdStatement.executeQuery(getIssueIdQuery);
+                                    ResultSet rs = getIssueIdStatement.executeQuery(getIssueIdQuery); //이슈 아이디 검색을 했으면
 
                                     String issueId = null;
 
-                                    while(rs.next()){
-                                        issueId = rs.getString("id");
+                                    while(rs.next()){ //
+                                        issueId = rs.getString("id"); //그 아이디 이름을 저장
                                     }
-                                    Comment newComment = new Comment(content.getText(), userName);
+                                    Comment newComment = new Comment(content.getText(), userName);//커멘트 객체를 생성하는데
+                                    //적은 내용과 본인 이름으로 커멘트를 생성한다. 그러면
 
                                     insertStatement = connection.prepareStatement(insertQuery);
                                     insertStatement.setString(1, issueId + newComment.getShortDate());
-                                    insertStatement.setString(2, issueId);
-                                    insertStatement.setString(3, newComment.getContent());
-                                    insertStatement.setString(4, newComment.getUserName());
-                                    insertStatement.setString(5, newComment.getDate());
+                                    //커멘트의 아이디는 이슈 아이디에다가 지금 시간의 숏데이트를 추가한 것
+                                    insertStatement.setString(2, issueId); //이슈 아이디에는 저장한 이슈 아이디
+                                    insertStatement.setString(3, newComment.getContent()); //적은 내용
+                                    insertStatement.setString(4, newComment.getUserName()); //본인 이름
+                                    insertStatement.setString(5, newComment.getDate()); // 현재 시간
                                     insertStatement.executeUpdate();
+                                    //이 저장되게 된다
 
                                     insertStatement.close();
                                     connection.close();
 
-                                    leaveCommentFrame.dispose();
+                                    leaveCommentFrame.dispose(); //커멘트 추가 후에는 창을 닫음.
                                 } catch (SQLException ex) {
                                     throw new RuntimeException(ex);
                                 }
@@ -234,10 +233,10 @@ class DevF extends JFrame {
         return panel;
     }
 
-    JPanel commentPane(Issue theIssue, int index){
+    JPanel commentPane(Issue theIssue, int index){ //커멘트 하나에 대한 정보를 보여주는 패널
         JPanel totalPane = new JPanel(new BorderLayout());
         LineBorder b1 = new LineBorder(Color.BLACK, 2);
-        totalPane.setBorder(b1);
+        totalPane.setBorder(b1); //커멘트끼리 구분을 위해 보더가 필요하다
         totalPane.setPreferredSize(new Dimension(800, 100));
         totalPane.setMaximumSize(new Dimension(800, 100));
         totalPane.setMinimumSize(new Dimension(800, 100));
@@ -245,12 +244,15 @@ class DevF extends JFrame {
         LineBorder b2 = new LineBorder(Color.GRAY, 1);
 
         JLabel user = new JLabel(theIssue.getComments().get(index).getUserName());
+        //커멘트를 올린 유저
         user.setBorder(b2);
 
         JLabel content = new JLabel(theIssue.getComments().get(index).getContent());
+        //커멘트 내용
         content.setBorder(b2);
 
         JLabel date = new JLabel(theIssue.getComments().get(index).getDate());
+        //커멘트를 올린 날짜를 뜨게 할 것이다
         date.setBorder(b2);
 
         totalPane.add(user, BorderLayout.WEST);
@@ -266,5 +268,5 @@ public class DevFrame {
     DevF devF;
     DevFrame(String projectName, String userName) {
         devF = new DevF(projectName, userName);
-    }//생성자는 나중에 name을 받아올 것임
+    }
 }
