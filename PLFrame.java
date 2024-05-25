@@ -53,7 +53,16 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
             }
         }
         JButton refresh = new JButton("refresh");
+        JButton refresh1 = new JButton("refresh");
         refresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PLF t = new PLF(projectName, userName);
+                dispose();
+
+            }
+        });
+        refresh1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PLF t = new PLF(projectName, userName);
@@ -63,7 +72,7 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
         });
 
         newIssuesPanel.add(refresh,constraints);
-        resolvedIssuesPanel.add(refresh,constraints);
+        resolvedIssuesPanel.add(refresh1,constraints);
 
         JScrollPane totalPane = new JScrollPane(issuesPanel);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
         //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.

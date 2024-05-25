@@ -65,6 +65,7 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
             }
         }
         JButton refresh = new JButton("refresh");
+        JButton refresh1  = new JButton("refresh");
         refresh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -73,8 +74,16 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
 
             }
         });
+        refresh1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TesterF t = new TesterF(projectName, userName);
+                dispose();
+
+            }
+        });
         myIssuePane.add(refresh,constraints);
-        myFixedIssuePane.add(refresh,constraints);
+        myFixedIssuePane.add(refresh1,constraints);
 
         pane.addTab("내가 올린 이슈", myIssuePane);
 
