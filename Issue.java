@@ -9,6 +9,7 @@ public class Issue {
     private Status status;
     private Priority priority;
     private String date;
+    private String shortDate; //sql에 id에 쓸 것.
     private String reporter;
     private String assignee;
     private String fixer;
@@ -21,6 +22,7 @@ public class Issue {
         this.status = status;
         this.priority = priority;
         this.date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")); //지금 시간 저장.
+        this.shortDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")); //지금 시간 저장.
         this.reporter = reporter;
         this.assignee = null;
         this.fixer = null;
@@ -34,6 +36,9 @@ public class Issue {
         this.status = status;
         this.priority = priority;
         this.date = date;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+        this.shortDate = dateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
         this.reporter = reporter;
         this.assignee = assignee;
         this.fixer = fixer;
@@ -74,5 +79,9 @@ public class Issue {
 
     public Status getStatus() {
         return status;
+    }
+
+    public String getShortDate() {
+        return shortDate;
     }
 }

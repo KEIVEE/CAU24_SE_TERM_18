@@ -239,7 +239,7 @@ class AddIssueF extends JFrame{
 
                     Issue newIssue = new Issue(projectName, issueTitle, issueDescription, Status.NEW, issuePriority, userName);
                     pstmt.setString(1, projectName);
-                    pstmt.setString(2, projectName + newIssue.getDate());
+                    pstmt.setString(2, projectName + newIssue.getShortDate());
                     pstmt.setString(3, issueTitle);
                     pstmt.setString(4, issueDescription);
                     pstmt.setString(5, Status.NEW.toString());

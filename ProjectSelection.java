@@ -29,7 +29,7 @@ class SelectionF extends JFrame{
                     new PLFrame(proj.getName(project.getSelectedIndex()), category.getUserName());
                 }
                 else if(category.getCategory().equals("dev")){
-                    new DevFrame();
+                    new DevFrame(proj.getName(project.getSelectedIndex()), category.getUserName());
                 }
 
                 dispose();

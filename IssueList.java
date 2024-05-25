@@ -36,7 +36,7 @@ public class IssueList {
                 String assignee = issueRs.getString("assignee");
                 String fixer = issueRs.getString("fixer");
 
-                String commentQuery = "select content from comment where issue_id = '"+ id + "'";
+                String commentQuery = "select * from comment where issue_id = '"+ id + "'";
                 ArrayList<Comment> comments = new ArrayList<>();
 
 
