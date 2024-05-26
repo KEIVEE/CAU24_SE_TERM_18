@@ -41,7 +41,12 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
             //새 창을 띄울 것이다.
         });
         addIssuePane.add(addIssueButton);
-        pane.addTab("이슈 등록하기", addIssuePane);
+
+        JScrollPane totalPane1 = new JScrollPane(addIssuePane);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
+        //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.
+        totalPane1.setVerticalScrollBar(new JScrollBar());
+
+        pane.addTab("이슈 등록하기", totalPane1);
 
         GridBagLayout gb = new GridBagLayout();
         GridBagConstraints constraints = new GridBagConstraints();
@@ -85,9 +90,16 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
         myIssuePane.add(refresh,constraints);
         myFixedIssuePane.add(refresh1,constraints);
 
-        pane.addTab("내가 올린 이슈", myIssuePane);
+        JScrollPane totalPane2 = new JScrollPane(myIssuePane);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
+        //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.
+        totalPane2.setVerticalScrollBar(new JScrollBar());
 
-        pane.addTab("내가 올린 고쳐진 이슈", myFixedIssuePane);
+        JScrollPane totalPane3 = new JScrollPane(myFixedIssuePane);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
+        //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.
+        totalPane3.setVerticalScrollBar(new JScrollBar());
+        pane.addTab("내가 올린 이슈", totalPane2);
+
+        pane.addTab("내가 올린 고쳐진 이슈", totalPane3);
 
         return pane;
     }
@@ -120,10 +132,16 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
                 JLabel title1 = new JLabel("title: " + theIssue.getTitle());//제목과
                 titlePane.add(title1);
 
-                JPanel descriptionPane = new JPanel();
-                JLabel description1 = new JLabel("Description: \r\n" + theIssue.getDescription());//설명이 뜸
-                //설명에서 뉴라인이 안 먹는 문제는 검색해서 문제해결 할 것임
-                descriptionPane.add(description1);
+                JPanel descriptionPane = new JPanel(new BorderLayout());
+                LineBorder border = new LineBorder(Color.GRAY, 1);
+                JLabel description1 = new JLabel("Description:");//설명 부분
+                JLabel description2 = new JLabel( theIssue.getDescription());
+                description1.setBorder(border);
+                description2.setBorder(border);
+
+                //뉴라인으로 넘어가지 않는 문제가 있다. 검색 후 해결해야 함
+                descriptionPane.add(description1, BorderLayout.NORTH);
+                descriptionPane.add(description2, BorderLayout.CENTER);
 
                 JButton justClose = new JButton("cancel");//닫기 버튼
                 justClose.addActionListener(new ActionListener() {
@@ -165,7 +183,13 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
                         for(int i = 0; i < theIssue.getComments().size(); i++){
                             commentsPane.add(commentPane(theIssue, i), constraints);
                         }
-                        totalPane.add(commentsPane, BorderLayout.CENTER);
+
+                        JScrollPane commentScroll = new JScrollPane(commentsPane);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
+                        //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.
+                        commentScroll.setVerticalScrollBar(new JScrollBar());
+
+
+                        totalPane.add(commentScroll, BorderLayout.CENTER);
                         totalPane.add(close, BorderLayout.SOUTH);
                         commentFrame.add(totalPane);
                         repaint();

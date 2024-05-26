@@ -57,7 +57,10 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
             }
         });
         assignedIssuePane.add(refresh, constraints);
-        pane.addTab("내 이슈", assignedIssuePane);
+        JScrollPane totalPane1 = new JScrollPane(assignedIssuePane);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
+        //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.
+        totalPane1.setVerticalScrollBar(new JScrollBar());
+        pane.addTab("내 이슈", totalPane1);
         return pane;
     }
     JPanel issuePanel(int index){ //이슈 하나에 대한 간단한 정보를 가지고 있는 패널이다.
@@ -88,10 +91,17 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
                 JLabel title1 = new JLabel("title: " + theIssue.getTitle()); //제목 부분
                 titlePane.add(title1);
 
-                JPanel descriptionPane = new JPanel();
-                JLabel description1 = new JLabel("Description: \r\n" + theIssue.getDescription());//설명 부분
+                JPanel descriptionPane = new JPanel(new BorderLayout());
+                LineBorder border = new LineBorder(Color.GRAY, 1);
+                JLabel description1 = new JLabel("Description:");//설명 부분
+                JLabel description2 = new JLabel( theIssue.getDescription());
+                description1.setBorder(border);
+                description2.setBorder(border);
+
                 //뉴라인으로 넘어가지 않는 문제가 있다. 검색 후 해결해야 함
-                descriptionPane.add(description1);
+                descriptionPane.add(description1, BorderLayout.NORTH);
+                descriptionPane.add(description2, BorderLayout.CENTER);
+
                 JButton fixed = new JButton("fixed");
                 JButton justClose = new JButton("cancel"); //아무것도 하지 않고 창 닫는 버튼.
                 String fixerquery = "update issue set fixer = ?, status = 'FIXED' where id = ?";

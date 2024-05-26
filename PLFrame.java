@@ -74,14 +74,22 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
         newIssuesPanel.add(refresh,constraints);
         resolvedIssuesPanel.add(refresh1,constraints);
 
-        JScrollPane totalPane = new JScrollPane(issuesPanel);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
+        JScrollPane totalPane1 = new JScrollPane(issuesPanel);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
         //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.
-        totalPane.setVerticalScrollBar(new JScrollBar());
+        totalPane1.setVerticalScrollBar(new JScrollBar());
+
+        JScrollPane totalPane2 = new JScrollPane(newIssuesPanel);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
+        //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.
+        totalPane2.setVerticalScrollBar(new JScrollBar());
+
+        JScrollPane totalPane3 = new JScrollPane(resolvedIssuesPanel);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
+        //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.
+        totalPane3.setVerticalScrollBar(new JScrollBar());
 
 
-        pane.addTab("전체 이슈", totalPane);
-        pane.addTab("새 이슈", newIssuesPanel);
-        pane.addTab("풀린 이슈",resolvedIssuesPanel);
+        pane.addTab("전체 이슈", totalPane1);
+        pane.addTab("새 이슈", totalPane2);
+        pane.addTab("풀린 이슈",totalPane3);
 
         return pane;
     }
@@ -114,10 +122,16 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
                     JLabel title1 = new JLabel("title: " + theIssue.getTitle()); //제목을 출력
                     titlePane.add(title1);
 
-                    JPanel descriptionPane = new JPanel();
-                    JLabel description1 = new JLabel("Description: \r\n" + theIssue.getDescription());//내용을 출력
-                    //뉴라인으로 안 넘어가는 이슈가 있다. 검색해서 해결할 것이다
-                    descriptionPane.add(description1);
+                    JPanel descriptionPane = new JPanel(new BorderLayout());
+                    LineBorder border = new LineBorder(Color.GRAY, 1);
+                    JLabel description1 = new JLabel("Description:");//설명 부분
+                    JLabel description2 = new JLabel( theIssue.getDescription());
+                    description1.setBorder(border);
+                    description2.setBorder(border);
+
+                    //뉴라인으로 넘어가지 않는 문제가 있다. 검색 후 해결해야 함
+                    descriptionPane.add(description1, BorderLayout.NORTH);
+                    descriptionPane.add(description2, BorderLayout.CENTER);
 
                     JButton justClose = new JButton("cancel");//취소를 누르면
                     justClose.addActionListener(new ActionListener() {
@@ -148,11 +162,11 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
                         addcomment.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                JFrame msgcomment = new JFrame("message");
-                                msgcomment.setSize(900, 600);
-                                msgcomment.setVisible(true);
+                                JFrame msgComment = new JFrame("message");
+                                msgComment.setSize(900, 600);
+                                msgComment.setVisible(true);
 
-                                JPanel msgbigpanel = new JPanel(new BorderLayout());
+                                JPanel msgBigPanel = new JPanel(new BorderLayout());
 
                                 JPanel msg = new JPanel(new BorderLayout());
                                 JLabel msg1 = new JLabel("message(up to 500 characters)");
@@ -210,22 +224,22 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
                                         repaint();
                                         revalidate();
 
-                                        msgcomment.dispose();//등록했으면 창 닫기
+                                        msgComment.dispose();//등록했으면 창 닫기
                                     }
                                 });
                                 cancel.addActionListener(new ActionListener() {
                                     @Override
                                     public void actionPerformed(ActionEvent e) {
-                                        msgcomment.dispose();
+                                        msgComment.dispose();
                                     }
                                 });
                                 okcan.add(ok);
                                 okcan.add(cancel);
-                                msgbigpanel.add(msg,BorderLayout.CENTER);
-                                msgbigpanel.add(okcan,BorderLayout.SOUTH);
-                                msgcomment.add(msgbigpanel);
+                                msgBigPanel.add(msg,BorderLayout.CENTER);
+                                msgBigPanel.add(okcan,BorderLayout.SOUTH);
+                                msgComment.add(msgBigPanel);
 
-                                msgcomment.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                                msgComment.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                             }
                         });
 
@@ -250,7 +264,12 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
                             commentsPane.add(commentPane(theIssue, i), constraints);
                             //커멘트 개수만큼 커멘트 페인을 추가한다.
                         }
-                        totalPane.add(commentsPane, BorderLayout.CENTER);
+                        JScrollPane commentsScroll = new JScrollPane(commentsPane);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
+                        //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.
+                        commentsScroll.setVerticalScrollBar(new JScrollBar());
+
+
+                        totalPane.add(commentsScroll, BorderLayout.CENTER);
                         totalPane.add(addClose, BorderLayout.SOUTH);
                         commentFrame.add(totalPane);
                         repaint();
