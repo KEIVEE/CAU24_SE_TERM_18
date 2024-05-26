@@ -59,16 +59,45 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
         constraints.fill = GridBagConstraints.VERTICAL;
         //본인이 올린 이슈를 볼 때, 아래쪽으로 이슈 패널들이 나열되도록 하는 그리드백 레이아웃과 그 조건 설정.
 
+        JPanel firstPanel = new JPanel(new GridLayout(1,5));
+        firstPanel.add(new JLabel("Title"));
+        firstPanel.add(new JLabel("Status"));
+        firstPanel.add(new JLabel("Priority"));
+        firstPanel.add(new JLabel("Date"));
+        firstPanel.add(new JLabel("Reporter"));
+        LineBorder d1 = new LineBorder(Color.BLACK,1);
+        firstPanel.setBorder(d1);
+        firstPanel.setPreferredSize(new Dimension(800, 50));
+        firstPanel.setMaximumSize(new Dimension(800, 50));
+        firstPanel.setMinimumSize(new Dimension(800, 50));
+        myIssuePane.add(firstPanel,constraints);
+
+
+        int myIssueNum = 0;
+        int myFixedIssueNum = 0;
         for(int i = 0; i < issues.getSize(); i++){//이슈 하나하나가
             if(issues.getTheIssue(i).getReporter().equals(userName)){
                 JPanel issuePanel = issuePanel(i);//리포터가 본인 이름과 같다면 그걸 추가하고
                 myIssuePane.add(issuePanel, constraints);
-
+                myIssueNum++;
                 if(issues.getTheIssue(i).getStatus().equals(Status.FIXED)){
                     myFixedIssuePane.add(issuePanel(i), constraints);//그 이슈의 status 가 픽스드라면 픽스드에도 추가한다.
+                    myFixedIssueNum ++;
                 }
             }
         }
+        Font myFont = new Font("Bold",Font.BOLD, 20);
+        JLabel emptys = new JLabel("there is no issue");
+        JLabel emptyfixed = new JLabel("there is no fixed issue :(");
+        emptys.setFont(myFont);
+        emptyfixed.setFont(myFont);
+        if(myIssueNum ==0){
+            myIssuePane.add(emptys,constraints);
+        }
+        if(myFixedIssueNum == 0){
+            myFixedIssuePane.add(emptyfixed,constraints);
+        }
+
         JButton refresh = new JButton("refresh");
         JButton refresh1  = new JButton("refresh");
         refresh.addActionListener(new ActionListener() {
