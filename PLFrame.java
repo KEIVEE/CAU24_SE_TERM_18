@@ -20,36 +20,33 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
 
     public JTabbedPane createTab(String projectName, String userName){
         JTabbedPane pane = new JTabbedPane();
-        GridBagLayout gb = new GridBagLayout();
+
 
         JPanel issuesPanel = new JPanel(); //전체 이슈를 담을 패널
         JPanel newIssuesPanel = new JPanel(); //새 이슈를 담을 패널
         JPanel resolvedIssuesPanel = new JPanel(); //풀린 이슈를 담을 패널
 
-        GridBagConstraints constraints = new GridBagConstraints();
 
-        issuesPanel.setLayout(gb);
-        newIssuesPanel.setLayout(gb);
-        resolvedIssuesPanel.setLayout(gb);
 
-        constraints.gridx = 0;
-        constraints.gridy = GridBagConstraints.RELATIVE;
-        constraints.fill = GridBagConstraints.VERTICAL;
+        issuesPanel.setLayout(new BoxLayout(issuesPanel, BoxLayout.Y_AXIS));
+        newIssuesPanel.setLayout(new BoxLayout(newIssuesPanel, BoxLayout.Y_AXIS));
+        resolvedIssuesPanel.setLayout(new BoxLayout(resolvedIssuesPanel, BoxLayout.Y_AXIS));
+
         //이슈들을 나열할 때 아래로 추가되게 하려고 만든 그리드백 레이아웃의 조건이다.
 
 
         for(int i = 0; i < issues.getSize(); i++){
             //이슈들을 돌아보면서,
             JPanel issuePanel = issuePanel(i,projectName, userName);
-            issuesPanel.add(issuePanel, constraints);
+            issuesPanel.add(issuePanel);
             // 모든 이슈를 넣을 패널에는 그냥 다 넣고
             if(issues.getTheIssue(i).getStatus().equals(Status.NEW)){
                 //새 이슈들을 넣을 패널에는 status 가 NEW 인 것을 넣고
-                newIssuesPanel.add(issuePanel(i, projectName, userName), constraints);
+                newIssuesPanel.add(issuePanel(i, projectName, userName));
             }
             else if(issues.getTheIssue(i).getStatus().equals(Status.RESOLVED)){
                 //풀린 이슈들을 넣을 패널에는 status 가 RESOLVED 인 것을 넣을 것이다
-                resolvedIssuesPanel.add(issuePanel(i,projectName, userName), constraints);
+                resolvedIssuesPanel.add(issuePanel(i,projectName, userName));
             }
         }
         JButton refresh = new JButton("refresh");
@@ -70,9 +67,6 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
 
             }
         });
-
-        newIssuesPanel.add(refresh,constraints);
-        resolvedIssuesPanel.add(refresh1,constraints);
 
         JScrollPane totalPane1 = new JScrollPane(issuesPanel);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
         //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.
@@ -251,17 +245,11 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
                         });
 
                         JPanel commentsPane = new JPanel();
-                        GridBagLayout gb = new GridBagLayout();
-                        GridBagConstraints constraints = new GridBagConstraints();
 
-                        commentsPane.setLayout(gb);
-
-                        constraints.gridx = 0;
-                        constraints.gridy = GridBagConstraints.RELATIVE;
-                        constraints.fill = GridBagConstraints.VERTICAL;
+                        commentsPane.setLayout(new BoxLayout(commentsPane, BoxLayout.Y_AXIS));
 
                         for(int i = 0; i < theIssue.getComments().size(); i++){
-                            commentsPane.add(new CommentPane(theIssue, i).getTotalPane(), constraints);
+                            commentsPane.add(new CommentPane(theIssue, i).getTotalPane());
                             //커멘트 개수만큼 커멘트 페인을 추가한다.
                         }
                         JScrollPane commentsScroll = new JScrollPane(commentsPane);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.

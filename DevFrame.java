@@ -28,23 +28,16 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
         JTabbedPane pane = new JTabbedPane();
         JPanel assignedIssuePane = new JPanel();
 
-        GridBagLayout gb = new GridBagLayout(); //레이아웃: 그리드백 레이아웃 사용
-        GridBagConstraints constraints = new GridBagConstraints();
 
-        assignedIssuePane.setLayout(gb);
 
-        constraints.gridx = 0;
-        constraints.gridy = GridBagConstraints.RELATIVE;
-        constraints.fill = GridBagConstraints.VERTICAL;
-        //패널들을 아래 방향으로 추가되게 한다.
-
+        assignedIssuePane.setLayout(new BoxLayout(assignedIssuePane, BoxLayout.Y_AXIS));
 
         for(int i = 0; i < issues.getSize(); i++){ // 이 프로젝트의 이슈 중에서
             if(issues.getTheIssue(i).getAssignee()!=null && issues.getTheIssue(i).getAssignee().equals(userName) && issues.getTheIssue(i).getStatus().equals(Status.ASSIGNED)){
                 //어사이니가 널이 아니고 본인이면: 앞의 조건이 없으면 오류가 난다. 이슈 생성 시에는 어사이니가 없어서 null 이기 때문임
 
                 JPanel issuePanel = issuePanel(i); //그 이슈에 대한 패널을 만들고
-                assignedIssuePane.add(issuePanel, constraints); //화면에 추가함.
+                assignedIssuePane.add(issuePanel); //화면에 추가함.
             }
         }
         JButton refresh = new JButton("refresh");
@@ -56,7 +49,7 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
 
             }
         });
-        assignedIssuePane.add(refresh, constraints);
+        assignedIssuePane.add(refresh);
         JScrollPane totalPane1 = new JScrollPane(assignedIssuePane);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
         //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.
         totalPane1.setVerticalScrollBar(new JScrollBar());
@@ -161,18 +154,10 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
                         });
 
                         JPanel commentsPane = new JPanel(); //커멘트들을 보이게 할 패널
-                        GridBagLayout gb = new GridBagLayout();
-                        GridBagConstraints constraints = new GridBagConstraints();
-
-                        commentsPane.setLayout(gb);
-
-                        constraints.gridx = 0;
-                        constraints.gridy = GridBagConstraints.RELATIVE;
-                        constraints.fill = GridBagConstraints.VERTICAL;
-                        //이슈들 보이게 하는 패널과 똑같이 그리드백 레이아웃을 적용한다
+                        commentsPane.setLayout(new BoxLayout(commentsPane, BoxLayout.Y_AXIS));
 
                         for(int i = 0; i < theIssue.getComments().size(); i++){
-                            commentsPane.add(new CommentPane(theIssue, i).getTotalPane(), constraints);
+                            commentsPane.add(new CommentPane(theIssue, i).getTotalPane());
                         }//이슈에 달린 커멘트의 개수만큼 추가하기.
                         totalPane.add(commentsPane, BorderLayout.CENTER);
                         totalPane.add(close, BorderLayout.SOUTH);

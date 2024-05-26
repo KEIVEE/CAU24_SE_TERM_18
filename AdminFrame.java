@@ -128,6 +128,10 @@ class AdminF extends JFrame {
             }
         });
 
+
+        //트렌드
+
+
         return pane;
     }
 
@@ -328,7 +332,7 @@ class NewProject extends JFrame {
                 String serverPassword = "00000000";
 
                 Connection connection;
-                Statement stmt = null;
+                Statement stmt;
 
                 try {
                     connection = DriverManager.getConnection(url, userName, serverPassword);

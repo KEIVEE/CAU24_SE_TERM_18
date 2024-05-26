@@ -48,24 +48,16 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
 
         pane.addTab("이슈 등록하기", totalPane1);
 
-        GridBagLayout gb = new GridBagLayout();
-        GridBagConstraints constraints = new GridBagConstraints();
-
-        myIssuePane.setLayout(gb);
-        myFixedIssuePane.setLayout(gb);
-
-        constraints.gridx = 0;
-        constraints.gridy = GridBagConstraints.RELATIVE;
-        constraints.fill = GridBagConstraints.VERTICAL;
-        //본인이 올린 이슈를 볼 때, 아래쪽으로 이슈 패널들이 나열되도록 하는 그리드백 레이아웃과 그 조건 설정.
+        myIssuePane.setLayout(new BoxLayout(myIssuePane, BoxLayout.Y_AXIS));
+        myFixedIssuePane.setLayout(new BoxLayout(myFixedIssuePane, BoxLayout.Y_AXIS));
 
         for(int i = 0; i < issues.getSize(); i++){//이슈 하나하나가
             if(issues.getTheIssue(i).getReporter().equals(userName)){
                 JPanel issuePanel = issuePanel(i);//리포터가 본인 이름과 같다면 그걸 추가하고
-                myIssuePane.add(issuePanel, constraints);
+                myIssuePane.add(issuePanel);
 
                 if(issues.getTheIssue(i).getStatus().equals(Status.FIXED)){
-                    myFixedIssuePane.add(issuePanel(i), constraints);//그 이슈의 status 가 픽스드라면 픽스드에도 추가한다.
+                    myFixedIssuePane.add(issuePanel(i));//그 이슈의 status 가 픽스드라면 픽스드에도 추가한다.
                 }
             }
         }
@@ -87,8 +79,8 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
 
             }
         });
-        myIssuePane.add(refresh,constraints);
-        myFixedIssuePane.add(refresh1,constraints);
+        myIssuePane.add(refresh);
+        myFixedIssuePane.add(refresh1);
 
         JScrollPane totalPane2 = new JScrollPane(myIssuePane);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
         //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.
@@ -171,17 +163,11 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
                         });
 
                         JPanel commentsPane = new JPanel();
-                        GridBagLayout gb = new GridBagLayout();
-                        GridBagConstraints constraints = new GridBagConstraints();
 
-                        commentsPane.setLayout(gb);
-
-                        constraints.gridx = 0;
-                        constraints.gridy = GridBagConstraints.RELATIVE;
-                        constraints.fill = GridBagConstraints.VERTICAL;
+                        commentsPane.setLayout(new BoxLayout(commentsPane, BoxLayout.Y_AXIS));
 
                         for(int i = 0; i < theIssue.getComments().size(); i++){
-                            commentsPane.add(new CommentPane(theIssue, i).getTotalPane(), constraints);
+                            commentsPane.add(new CommentPane(theIssue, i).getTotalPane());
                         }
 
                         JScrollPane commentScroll = new JScrollPane(commentsPane);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
