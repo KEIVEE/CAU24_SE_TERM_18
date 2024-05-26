@@ -50,7 +50,7 @@ class MyFrame extends JFrame{ //로그인 창
 
 
                     IDcheck = id.getText();
-                    pwcheck = Arrays.toString(password.getPassword()); //텍스트필드에 있는 값을 찾아와서
+                    pwcheck = new String(password.getPassword()); //텍스트필드에 있는 값을 찾아와서
 
                     String loginQuery = "select * from account where id = '" + IDcheck + "'";//쿼리를 작성
                     //어카운트에서 id가 이것인 것을 골라라

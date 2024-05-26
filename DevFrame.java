@@ -172,7 +172,7 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
                         //이슈들 보이게 하는 패널과 똑같이 그리드백 레이아웃을 적용한다
 
                         for(int i = 0; i < theIssue.getComments().size(); i++){
-                            commentsPane.add(commentPane(theIssue, i), constraints);
+                            commentsPane.add(new CommentPane(theIssue, i).getTotalPane(), constraints);
                         }//이슈에 달린 커멘트의 개수만큼 추가하기.
                         totalPane.add(commentsPane, BorderLayout.CENTER);
                         totalPane.add(close, BorderLayout.SOUTH);
@@ -283,35 +283,6 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
         });
 
         return panel;
-    }
-
-    JPanel commentPane(Issue theIssue, int index){ //커멘트 하나에 대한 정보를 보여주는 패널
-        JPanel totalPane = new JPanel(new BorderLayout());
-        LineBorder b1 = new LineBorder(Color.BLACK, 2);
-        totalPane.setBorder(b1); //커멘트끼리 구분을 위해 보더가 필요하다
-        totalPane.setPreferredSize(new Dimension(800, 100));
-        totalPane.setMaximumSize(new Dimension(800, 100));
-        totalPane.setMinimumSize(new Dimension(800, 100));
-
-        LineBorder b2 = new LineBorder(Color.GRAY, 1);
-
-        JLabel user = new JLabel(theIssue.getComments().get(index).getUserName());
-        //커멘트를 올린 유저
-        user.setBorder(b2);
-
-        JLabel content = new JLabel(theIssue.getComments().get(index).getContent());
-        //커멘트 내용
-        content.setBorder(b2);
-
-        JLabel date = new JLabel(theIssue.getComments().get(index).getDate());
-        //커멘트를 올린 날짜를 뜨게 할 것이다
-        date.setBorder(b2);
-
-        totalPane.add(user, BorderLayout.WEST);
-        totalPane.add(content, BorderLayout.CENTER);
-        totalPane.add(date, BorderLayout.SOUTH);
-
-        return totalPane;
     }
 
 }

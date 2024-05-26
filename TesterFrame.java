@@ -181,7 +181,7 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
                         constraints.fill = GridBagConstraints.VERTICAL;
 
                         for(int i = 0; i < theIssue.getComments().size(); i++){
-                            commentsPane.add(commentPane(theIssue, i), constraints);
+                            commentsPane.add(new CommentPane(theIssue, i).getTotalPane(), constraints);
                         }
 
                         JScrollPane commentScroll = new JScrollPane(commentsPane);//모든 이슈들을 모아놓은 것에 스크롤바를 적용시킨 패널.
@@ -256,31 +256,7 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
         return panel;
     }
 
-    JPanel commentPane(Issue theIssue, int index){//커멘트 하나를 보게 하는 패널: 피엘과 데브와 같다.
-        JPanel totalPane = new JPanel(new BorderLayout());
-        LineBorder b1 = new LineBorder(Color.BLACK, 2);
-        totalPane.setBorder(b1);
-        totalPane.setPreferredSize(new Dimension(800, 100));
-        totalPane.setMaximumSize(new Dimension(800, 100));
-        totalPane.setMinimumSize(new Dimension(800, 100));
 
-        LineBorder b2 = new LineBorder(Color.GRAY, 1);
-
-        JLabel user = new JLabel(theIssue.getComments().get(index).getUserName());
-        user.setBorder(b2);
-
-        JLabel content = new JLabel(theIssue.getComments().get(index).getContent());
-        content.setBorder(b2);
-
-        JLabel date = new JLabel(theIssue.getComments().get(index).getDate());
-        date.setBorder(b2);
-
-        totalPane.add(user, BorderLayout.WEST);
-        totalPane.add(content, BorderLayout.CENTER);
-        totalPane.add(date, BorderLayout.SOUTH);
-
-        return totalPane;
-    }
 }
 
 class AddIssueF extends JFrame{ //이슈 추가하기를 눌렀을 때 나오는 새 창.
