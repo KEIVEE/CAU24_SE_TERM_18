@@ -1,2 +1,2 @@
-# KEIVEE.github.io
+# CAU24_SE_TERM_18
 SE TERM PROJECT
