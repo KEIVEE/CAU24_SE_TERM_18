@@ -8,11 +8,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 class MyFrame extends JFrame{ //로그인 창
     JTextField id; //로그인 아이디
-    JTextField password; //로그인 비밀번호
+    JPasswordField password; //로그인 비밀번호
     JButton jok; //로그인 버튼
     ArrayList<Issue> issues = new ArrayList<>(); //이슈들 모임.
 
@@ -24,7 +25,7 @@ class MyFrame extends JFrame{ //로그인 창
         JPanel panel = new JPanel(); //아이디랑 비밀번호가 포함된 패널
         panel.setLayout(new GridLayout(2,2));//2*2표로 만들어볼 것
         id = new JTextField(30);
-        password = new JTextField(30);
+        password = new JPasswordField(30);
         panel.add(new JLabel("ID : "));
         panel.add(id);
         panel.add(new JLabel("PASSWORD : "));
@@ -49,7 +50,7 @@ class MyFrame extends JFrame{ //로그인 창
 
 
                     IDcheck = id.getText();
-                    pwcheck = password.getText(); //텍스트필드에 있는 값을 찾아와서
+                    pwcheck = Arrays.toString(password.getPassword()); //텍스트필드에 있는 값을 찾아와서
 
                     String loginQuery = "select * from account where id = '" + IDcheck + "'";//쿼리를 작성
                     //어카운트에서 id가 이것인 것을 골라라
@@ -159,3 +160,4 @@ public class GuiTest{
 
     }
 }
+
