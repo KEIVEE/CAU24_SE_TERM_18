@@ -62,7 +62,7 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
         firstPanel.setPreferredSize(new Dimension(800, 50));
         firstPanel.setMaximumSize(new Dimension(800, 50));
         firstPanel.setMinimumSize(new Dimension(800, 50));
-        myIssuePane.add(firstPanel,constraints);
+        myIssuePane.add(firstPanel);
 
 
         int myIssueNum = 0;
@@ -72,11 +72,11 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
                 JPanel issuePanel = issuePanel(i);//리포터가 본인 이름과 같다면 그걸 추가하고
                 myIssuePane.add(issuePanel);
 
-                myIssuePane.add(issuePanel, constraints);
+                myIssuePane.add(issuePanel);
                 myIssueNum++;
                 if(issues.getTheIssue(i).getStatus().equals(Status.FIXED)){
                     myFixedIssuePane.add(issuePanel(i));//그 이슈의 status 가 픽스드라면 픽스드에도 추가한다.
-                    myFixedIssuePane.add(issuePanel(i), constraints);//그 이슈의 status 가 픽스드라면 픽스드에도 추가한다.
+                    myFixedIssuePane.add(issuePanel(i));//그 이슈의 status 가 픽스드라면 픽스드에도 추가한다.
                     myFixedIssueNum ++;
                 }
             }
@@ -87,10 +87,10 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
         emptys.setFont(myFont);
         emptyfixed.setFont(myFont);
         if(myIssueNum ==0){
-            myIssuePane.add(emptys,constraints);
+            myIssuePane.add(emptys);
         }
         if(myFixedIssueNum == 0){
-            myFixedIssuePane.add(emptyfixed,constraints);
+            myFixedIssuePane.add(emptyfixed);
         }
 
         JButton refresh = new JButton("refresh");
@@ -195,8 +195,6 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
                         });
 
                         JPanel commentsPane = new JPanel();
-                        GridBagLayout gb = new GridBagLayout();
-                        GridBagConstraints constraints = new GridBagConstraints();
 
                         commentsPane.setLayout(new BoxLayout(commentsPane, BoxLayout.Y_AXIS));
 
