@@ -27,16 +27,15 @@ public class TrendPanel extends JPanel {
 
     }
 
-    ArrayList<Issue> issuesByStatus(Status status){
+    ArrayList<Issue> issuesByStatus(Status status) {
         ArrayList<Issue> newIssues = new ArrayList<>();
-        for(int i = 0; i < issueList.size(); i++){
-            if(issueList.get(i).getStatus().equals(status)){
+        for (int i = 0; i < issueList.size(); i++) {
+            if (issueList.get(i).getStatus().equals(status)) {
                 newIssues.add(issueList.get(i));
             }
         }
         return newIssues;
-
-    JPanel GraphPanel(int time, ArrayList<Issue> issueList){
+    }
 
     JScrollPane statisticByIssueStatus(){
 
@@ -64,21 +63,28 @@ public class TrendPanel extends JPanel {
         statisticByIssueStatus.add(reopenedIssuesLabel);
 
 
-        long daysDifference = 0;
+
         statisticByIssueStatus.setPreferredSize(new Dimension(400, 200));
         statisticByIssueStatus.setMaximumSize(new Dimension(400, 200));
         statisticByIssueStatus.setMinimumSize(new Dimension(400, 200));
 
-        JPanel graph = new JPanel();
-        LocalDateTime oldestDate = null;
-        LocalDateTime newestDate = null;
-        if(time == 0) { //일별 비교
-            // 가장 오래된 날짜와 가장 최신 날짜 초기화
+
         statisticByIssueStatus.setBorder(new TitledBorder(new LineBorder(Color.BLACK, 2), "Issues by Status"));
 
         JScrollPane statisticByIssueStatusWithScroll = new JScrollPane(statisticByIssueStatus);
         statisticByIssueStatusWithScroll.setVerticalScrollBar(new JScrollBar());
 
+
+        return statisticByIssueStatusWithScroll;
+    }
+
+    JPanel GraphPanel(int time, ArrayList<Issue> issueList){
+        long daysDifference = 0;
+        JPanel graph = new JPanel();
+        LocalDateTime oldestDate = null;
+        LocalDateTime newestDate = null;
+        if(time == 0) { //일별 비교
+            // 가장 오래된 날짜와 가장 최신 날짜 초기화
             // 이슈 리스트에서 날짜를 파싱하고 최소 및 최대 날짜 찾기
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             for (Issue issue : issueList) {
@@ -90,7 +96,16 @@ public class TrendPanel extends JPanel {
                     newestDate = date;
                 }
             }
-        return statisticByIssueStatusWithScroll;
+            // 날짜 차이 계산
+            daysDifference = java.time.Duration.between(oldestDate, newestDate).toDays();
+            BarGraphPanel barGraphPanel = new BarGraphPanel(issueList, oldestDate, newestDate);
+            graph.add(barGraphPanel);
+        }
+        else if(time == 1){ //월별 비교
+
+        }
+        return graph;
+
     }
 
     ArrayList<Issue> issuesByDev(String userName){
@@ -106,10 +121,7 @@ public class TrendPanel extends JPanel {
     JScrollPane statisticByDev(){
         JPanel statisticByDev = new JPanel();
         statisticByDev.setLayout(new BoxLayout(statisticByDev, BoxLayout.Y_AXIS));
-            // 날짜 차이 계산
-            daysDifference = java.time.Duration.between(oldestDate, newestDate).toDays();
-            BarGraphPanel barGraphPanel = new BarGraphPanel(issueList, oldestDate, newestDate);
-            graph.add(barGraphPanel);
+
 
         Statement devStatement;
         try {
@@ -122,15 +134,14 @@ public class TrendPanel extends JPanel {
 
             devStatement = connection.createStatement();
             ResultSet rs = devStatement.executeQuery(devQuery);//실행
-        }
-        else if(time == 1){ //월별 비교
+
 
             while(rs.next()){
                 ArrayList<Issue> issuesByDev = issuesByDev(rs.getString("name"));
                 JLabel devLabel = new JLabel(rs.getString("name") + ": " + issuesByDev.size());
                 statisticByDev.add(devLabel);
             }
-        }
+
 
             devStatement.close();
             connection.close();
@@ -138,8 +149,7 @@ public class TrendPanel extends JPanel {
 
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
-        }
-        return graph;
+
     }
 
         statisticByDev.setPreferredSize(new Dimension(400, 200));
@@ -147,7 +157,7 @@ public class TrendPanel extends JPanel {
         statisticByDev.setMinimumSize(new Dimension(400, 200));
 
         statisticByDev.setBorder(new TitledBorder(new LineBorder(Color.BLACK, 2), "Fixed number by devs"));
-}
+
 
         JScrollPane statisticByDevWithScroll = new JScrollPane(statisticByDev);
         statisticByDevWithScroll.setVerticalScrollBar(new JScrollBar());
