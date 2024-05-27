@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class TrendPanel extends JPanel {
     ArrayList<Issue> issueList;
     String projectName;
+    public TrendPanel(){}
 
     public TrendPanel(String projectName, ArrayList<Issue> issueList){
         //add(GraphPanel(0,issueList));
@@ -216,7 +217,14 @@ public class TrendPanel extends JPanel {
             }
 
         }
+/*
+        statisticByDates.setPreferredSize(new Dimension(800, 200));
+        statisticByDates.setMaximumSize(new Dimension(800, 200));
+        statisticByDates.setMinimumSize(new Dimension(800, 200));
 
-        return new JScrollPane(statisticByDates);
+ */
+        JScrollPane statisticByDatesWithScroll = new JScrollPane(statisticByDates);
+        statisticByDatesWithScroll.setPreferredSize(new Dimension(800, 250));
+        return statisticByDatesWithScroll;
     }
 }

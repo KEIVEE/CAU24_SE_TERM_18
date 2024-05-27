@@ -58,13 +58,15 @@ class AdminF extends JFrame {
                 }
             }
             JPanel seeTrendsPanel = new JPanel();
+
             JButton seeTrends = new JButton("SEE TRENDS");
             seeTrends.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     seeTrendsPanel.remove(seeTrends);
                     seeTrendsPanel.add(new TrendPanel(theProjectName, projectIssues));
-
+                    seeTrendsPanel.repaint();
+                    seeTrendsPanel.revalidate();
                 }
             });
             seeTrendsPanel.add(seeTrends);
