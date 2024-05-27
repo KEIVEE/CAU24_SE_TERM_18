@@ -299,9 +299,7 @@ class AdminF extends JFrame {
         return label;
     }
 
-    public static void main(String[] args) {
-        new AdminFrame();
-    }
+
 }
 
 class NewProject extends JFrame {
