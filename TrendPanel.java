@@ -5,6 +5,7 @@ import java.awt.*;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -22,12 +23,14 @@ public class TrendPanel extends JPanel {
 
 
         JScrollPane statisticByDates = statisticByDates();
+        JScrollPane statisticByMonths = statisticByMonths();
         JScrollPane statisticByIssueStatus = statisticByIssueStatus();
         JScrollPane statisticByDev = statisticByDev();
         JPanel statusPlusDev = new JPanel();
         statusPlusDev.add(statisticByIssueStatus);
         statusPlusDev.add(statisticByDev);
         add(statisticByDates);
+        add(statisticByMonths);
         add(statusPlusDev);
 
     }
@@ -194,9 +197,41 @@ public class TrendPanel extends JPanel {
         statisticByDate.add(dateLabel, BorderLayout.NORTH);
         statisticByDate.add(amountLabel, BorderLayout.CENTER);
 
-        statisticByDate.setPreferredSize(new Dimension(200, 200));
-        statisticByDate.setMaximumSize(new Dimension(200, 200));
-        statisticByDate.setMinimumSize(new Dimension(200, 200));
+        statisticByDate.setPreferredSize(new Dimension(200, 100));
+        statisticByDate.setMaximumSize(new Dimension(200, 100));
+        statisticByDate.setMinimumSize(new Dimension(200, 100));
+
+        return statisticByDate;
+    }
+
+    ArrayList<Issue> issuesByMonth(YearMonth month){
+        ArrayList<Issue> newIssues = new ArrayList<>();
+        for(int i = 0; i <issueList.size(); i++){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime = LocalDateTime.parse(issueList.get(i).getDate(), formatter);
+            if(dateTime.toLocalDate().getYear() == month.getYear() &&
+                    dateTime.toLocalDate().getMonth() == month.getMonth()){
+                newIssues.add(issueList.get(i));
+            }
+        }
+        return newIssues;
+    }
+
+    JPanel numbersByMonth(YearMonth month){
+        ArrayList<Issue> issues = issuesByMonth(month);
+        JPanel statisticByDate = new JPanel(new BorderLayout());
+
+        JLabel dateLabel = new JLabel(String.valueOf(month.getYear()) + "-" + String.valueOf(month.getMonthValue()));
+        dateLabel.setBorder(new LineBorder(Color.BLACK, 1));
+        JLabel amountLabel = new JLabel(String.valueOf(issues.size()));
+        amountLabel.setBorder(new LineBorder(Color.BLACK, 1));
+
+        statisticByDate.add(dateLabel, BorderLayout.NORTH);
+        statisticByDate.add(amountLabel, BorderLayout.CENTER);
+
+        statisticByDate.setPreferredSize(new Dimension(200, 100));
+        statisticByDate.setMaximumSize(new Dimension(200, 100));
+        statisticByDate.setMinimumSize(new Dimension(200, 100));
 
         return statisticByDate;
     }
@@ -217,14 +252,31 @@ public class TrendPanel extends JPanel {
             }
 
         }
-/*
-        statisticByDates.setPreferredSize(new Dimension(800, 200));
-        statisticByDates.setMaximumSize(new Dimension(800, 200));
-        statisticByDates.setMinimumSize(new Dimension(800, 200));
 
- */
         JScrollPane statisticByDatesWithScroll = new JScrollPane(statisticByDates);
-        statisticByDatesWithScroll.setPreferredSize(new Dimension(800, 250));
+        statisticByDatesWithScroll.setPreferredSize(new Dimension(800, 150));
+        return statisticByDatesWithScroll;
+    }
+
+    JScrollPane statisticByMonths(){
+        JPanel statisticByDates = new JPanel();
+        statisticByDates.setLayout(new BoxLayout(statisticByDates, BoxLayout.X_AXIS));
+
+        ArrayList<YearMonth> months = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        for(int i = 0; i < issueList.size(); i++){
+            LocalDateTime dateTime = LocalDateTime.parse(issueList.get(i).getDate(), formatter);
+            YearMonth yearMonth = YearMonth.from(dateTime);
+            if (!months.contains(yearMonth)) {
+                months.add(yearMonth);
+                JPanel numbersInThisMonth = numbersByMonth(yearMonth);
+                statisticByDates.add(numbersInThisMonth);
+            }
+
+        }
+
+        JScrollPane statisticByDatesWithScroll = new JScrollPane(statisticByDates);
+        statisticByDatesWithScroll.setPreferredSize(new Dimension(800, 150));
         return statisticByDatesWithScroll;
     }
 }
