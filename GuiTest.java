@@ -21,15 +21,31 @@ class MyFrame extends JFrame{ //로그인 창
     public MyFrame(){
         super("ISSUE HANDLING SYSTEM - LOGIN"); //로그인 창 제목
         setVisible(true);
-        setSize(400,300);
+        setSize(400,350);
+
+        JPanel panelname = new JPanel();
+        JLabel lb = new JLabel(" ISSUE HANDLING SYSTEM ");
+
+        Font myFont = new Font("italic",Font.ITALIC,20);
+        lb.setFont(myFont);
+
+
+        panelname.add(lb,BorderLayout.CENTER);
+
+
         JPanel panel = new JPanel(); //아이디랑 비밀번호가 포함된 패널
         panel.setLayout(new GridLayout(2,2));//2*2표로 만들어볼 것
         id = new JTextField(30);
         password = new JPasswordField(30);
+
         panel.add(new JLabel("ID : "));
         panel.add(id);
         panel.add(new JLabel("PASSWORD : "));
         panel.add(password);//아이디랑 비밀번호 추가함
+
+        JLabel loginfail = new JLabel("");
+        JPanel logpanel = new JPanel();
+        logpanel.add(loginfail);
 
         JPanel panel2 = new JPanel();
         jok = new JButton("Log in");//버튼 이름 지정
@@ -117,11 +133,15 @@ class MyFrame extends JFrame{ //로그인 창
                     throw new RuntimeException(ex);
                 }
                 if(!login_status){//로그인 실패 시: 아이디가 틀렸거나 비번이 틀렸거나. 아직은 구분하지 않았다. 경고메세지같은거 띄우고 싶긴 함
-                    new MyFrame();//로그인 창을 다시 뜨게 한다
+                   id.setText("");
+                   password.setText("");
+                   loginfail.setText("다시 입력하세요");
+                    //new MyFrame();//로그인 창을 다시 뜨게 한다
                 }
 
-
-                dispose(); //로그인 실패하던 성공하던 그 창은 닫음
+                if(login_status == true) {
+                    dispose(); //로그인 실패하던 성공하던 그 창은 닫음
+                }
                 revalidate();
                 repaint();
 
@@ -135,8 +155,10 @@ class MyFrame extends JFrame{ //로그인 창
         panel2.add(jok);//로그인버튼 추가
 
         JPanel bigPanel = new JPanel(); //패널들을 모아놓은 패널
-        bigPanel.setLayout(new GridLayout(2,1));
+        bigPanel.setLayout(new GridLayout(4,1));
+        bigPanel.add(panelname);
         bigPanel.add(panel);// 위쪽에 아이디 패스워드
+        bigPanel.add(logpanel);
         bigPanel.add(panel2);//아래쪽에 로그인 버튼
 
 
