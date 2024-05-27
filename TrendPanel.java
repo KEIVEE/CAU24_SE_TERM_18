@@ -3,6 +3,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -12,17 +13,20 @@ public class TrendPanel extends JPanel {
     String projectName;
 
     public TrendPanel(String projectName, ArrayList<Issue> issueList){
-        add(GraphPanel(0,issueList));
+        //add(GraphPanel(0,issueList));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.projectName = projectName;
         this.issueList = issueList;
 
+
+
+        JScrollPane statisticByDates = statisticByDates();
         JScrollPane statisticByIssueStatus = statisticByIssueStatus();
         JScrollPane statisticByDev = statisticByDev();
         JPanel statusPlusDev = new JPanel();
         statusPlusDev.add(statisticByIssueStatus);
         statusPlusDev.add(statisticByDev);
-
+        add(statisticByDates);
         add(statusPlusDev);
 
     }
@@ -163,5 +167,58 @@ public class TrendPanel extends JPanel {
         statisticByDevWithScroll.setVerticalScrollBar(new JScrollBar());
 
         return statisticByDevWithScroll;
+    }
+
+    ArrayList<Issue> issuesByDate(LocalDate date){
+        ArrayList<Issue> newIssues = new ArrayList<>();
+        for(int i = 0; i <issueList.size(); i++){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime = LocalDateTime.parse(issueList.get(i).getDate(), formatter);
+            if(dateTime.toLocalDate().equals(date)){
+                newIssues.add(issueList.get(i));
+            }
+        }
+        return newIssues;
+    }
+
+    JPanel numbersByDate(LocalDate date){
+        ArrayList<Issue> issues = issuesByDate(date);
+        JPanel statisticByDate = new JPanel(new BorderLayout());
+
+        JLabel dateLabel = new JLabel(date.toString());
+        dateLabel.setBorder(new LineBorder(Color.BLACK, 1));
+        JLabel amountLabel = new JLabel(String.valueOf(issues.size()));
+        amountLabel.setBorder(new LineBorder(Color.BLACK, 1));
+
+        statisticByDate.add(dateLabel, BorderLayout.NORTH);
+        statisticByDate.add(amountLabel, BorderLayout.CENTER);
+
+        statisticByDate.setPreferredSize(new Dimension(200, 200));
+        statisticByDate.setMaximumSize(new Dimension(200, 200));
+        statisticByDate.setMinimumSize(new Dimension(200, 200));
+
+        return statisticByDate;
+    }
+
+    JScrollPane statisticByDates(){
+        JPanel statisticByDates = new JPanel();
+        statisticByDates.setLayout(new BoxLayout(statisticByDates, BoxLayout.X_AXIS));
+
+        ArrayList<LocalDate> dates = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        for(int i = 0; i < issueList.size(); i++){
+            LocalDateTime dateTime = LocalDateTime.parse(issueList.get(i).getDate(), formatter);
+            if(!dates.contains(dateTime.toLocalDate())){
+                LocalDate date = dateTime.toLocalDate();
+                dates.add(date);
+                JPanel numbersInThisDate = numbersByDate(date);
+                statisticByDates.add(numbersInThisDate);
+            }
+
+        }
+        JScrollPane statisticByDatesWithScroll = new JScrollPane(statisticByDates);
+        statisticByDatesWithScroll.setHorizontalScrollBar(new JScrollBar());
+
+        return statisticByDatesWithScroll;
     }
 }

@@ -30,7 +30,6 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
         JPanel addIssuePane = new JPanel();
         JPanel myIssuePane = new JPanel();
         JPanel myFixedIssuePane = new JPanel();
-        TrendPanel graphPane = new TrendPanel(projectName, issues.browseAll());
 
         JButton addIssueButton = new JButton("이슈 등록 버튼");//이슈 등록 버튼을 누르면
         addIssueButton.addActionListener(new ActionListener() {
@@ -125,9 +124,6 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
 
         pane.addTab("내가 올린 고쳐진 이슈", totalPane3);
         pane.addTab("트렌드", new TrendPanel(projectName, issues.browseAll()));
-
-
-        pane.addTab("통계",graphPane);
 
         return pane;
     }

@@ -134,7 +134,7 @@ class MyFrame extends JFrame{ //로그인 창
                 if(!login_status){//로그인 실패 시: 아이디가 틀렸거나 비번이 틀렸거나. 아직은 구분하지 않았다. 경고메세지같은거 띄우고 싶긴 함
                    id.setText("");
                    password.setText("");
-                   loginfail.setText("다시 입력하세요");
+                   loginfail.setText("잘못된 ID 혹은 비밀번호입니다.");
                     //new MyFrame();//로그인 창을 다시 뜨게 한다
                 }
 

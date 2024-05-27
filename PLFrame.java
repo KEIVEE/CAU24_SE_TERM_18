@@ -84,6 +84,7 @@ class PLF extends JFrame { //피엘이 프로젝트를 고르고 나면 뜨는 �
         pane.addTab("전체 이슈", totalPane1);
         pane.addTab("새 이슈", totalPane2);
         pane.addTab("풀린 이슈",totalPane3);
+        pane.addTab("트렌드", new TrendPanel(projectName, issues.browseAll()));
 
         return pane;
     }
