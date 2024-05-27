@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,8 +30,8 @@ public class BarGraphPanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
 
         // 그래프 영역 설정
-        int graphWidth = getWidth() - 100;
-        int graphHeight = getHeight() - 100;
+        int graphWidth = 800;
+        int graphHeight = 250;
         int startX = 50;
         int startY = 50;
         int panelX = 400;
@@ -58,10 +55,15 @@ public class BarGraphPanel extends JPanel {
 
         // 막대 그래프 그리기
         for (LocalDate date : dailyCounts.keySet()) {
-            int x = startX + (int) (Duration.between(oldestDate3, date.atStartOfDay()).toDays() * ((double) graphWidth / Duration.between(oldestDate3, newestDate3).toDays()));
+            Period period = Period.between(oldestDate2,date);
+            Period period1 = Period.between(oldestDate2, newestDate2);
+
+            int daydifference = period.getDays();
+            int daydifference2 = period1.getDays();
+            int x = startX + (int) (daydifference * ((double) graphWidth / (daydifference2+1)));
             int y = startY + graphHeight - (int) ((double) dailyCounts.get(date) / maxCount * graphHeight);
             int barHeight = (int) ((double) dailyCounts.get(date) / maxCount * graphHeight);
-            int barWidth = (int) (((double) graphWidth / Duration.between(oldestDate3, newestDate3).toDays()) - 1);
+            int barWidth = (int) (((double) graphWidth /daydifference2 +1 ) - 1);
 
             g2d.setColor(Color.BLUE);
             g2d.fillRect(x, y, barWidth, barHeight);
@@ -75,7 +77,12 @@ public class BarGraphPanel extends JPanel {
         // x 축 눈금 그리기
         currentDate = oldestDate2;
         while (!currentDate.isAfter(newestDate2)) {
-            int x = startX + (int) (Duration.between(oldestDate3, currentDate.atStartOfDay()).toDays() * ((double) graphWidth / Duration.between(oldestDate3, newestDate3).toDays()));
+            Period period = Period.between(oldestDate2,currentDate);
+            Period period1 = Period.between(oldestDate2, newestDate2);
+
+            int daydifference = period.getDays();
+            int daydifference2 = period1.getDays();
+            int x = startX + (int) (daydifference * ((double) graphWidth / (daydifference2 +1)));
             g2d.drawLine(x, startY + graphHeight, x, startY + graphHeight + 5);
             g2d.drawString(currentDate.format(DateTimeFormatter.ofPattern("MM/dd")), x - 15, startY + graphHeight + 20);
             currentDate = currentDate.plusDays(1);
