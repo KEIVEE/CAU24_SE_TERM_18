@@ -127,7 +127,6 @@ class TesterF extends JFrame { //테스터가 프로젝트를 고르면 실행�
         pane.addTab("트렌드", new TrendPanel(projectName, issues.browseAll()));
 
 
-        pane.addTab("통계",graphPane);
 
         return pane;
     }

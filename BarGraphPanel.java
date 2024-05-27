@@ -46,58 +46,13 @@ public class BarGraphPanel extends JPanel {
         for (Issue issue : issueList) {
             LocalDate date = LocalDateTime.parse(issue.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toLocalDate();
             dailyCounts.put(date, dailyCounts.get(date) + 1);
+
         }
 
         // 최대 이슈 개수 찾기
         int maxCount = dailyCounts.values().stream().max(Integer::compareTo).orElse(0);
 
 
-
-        // 막대 그래프 그리기
-        for (LocalDate date : dailyCounts.keySet()) {
-            Period period = Period.between(oldestDate2,date);
-            Period period1 = Period.between(oldestDate2, newestDate2);
-
-            int daydifference = period.getDays();
-            int daydifference2 = period1.getDays();
-            int x = startX + (int) (daydifference * ((double) graphWidth / (daydifference2+1)));
-            int y = startY + graphHeight - (int) ((double) dailyCounts.get(date) / maxCount * graphHeight);
-            int barHeight = (int) ((double) dailyCounts.get(date) / maxCount * graphHeight);
-            int barWidth = (int) (((double) graphWidth /daydifference2 +1 ) - 1);
-
-            g2d.setColor(Color.BLUE);
-            g2d.fillRect(x, y, barWidth, barHeight);
-        }
-
-        // 그래프 축 그리기
-        g2d.setColor(Color.BLACK);
-        g2d.drawLine(startX, startY + graphHeight, startX + graphWidth, startY + graphHeight); // x 축
-        g2d.drawLine(startX, startY + graphHeight, startX, startY); // y 축
-
-        // x 축 눈금 그리기
-        currentDate = oldestDate2;
-        while (!currentDate.isAfter(newestDate2)) {
-            Period period = Period.between(oldestDate2,currentDate);
-            Period period1 = Period.between(oldestDate2, newestDate2);
-
-            int daydifference = period.getDays();
-            int daydifference2 = period1.getDays();
-            int x = startX + (int) (daydifference * ((double) graphWidth / (daydifference2 +1)));
-            g2d.drawLine(x, startY + graphHeight, x, startY + graphHeight + 5);
-            g2d.drawString(currentDate.format(DateTimeFormatter.ofPattern("MM/dd")), x - 15, startY + graphHeight + 20);
-            currentDate = currentDate.plusDays(1);
-        }
-
-        // y 축 눈금 그리기
-        for (int i = 0; i <= 10; i++) {
-            int y = startY + graphHeight - (int) ((double) i / 10 * graphHeight);
-            g2d.drawLine(startX, y, startX - 5, y);
-            g2d.drawString(String.valueOf(i * maxCount / 10), startX - 40, y);
-        }
-
-        // 축 레이블 그리기
-        g2d.drawString("Date", startX + graphWidth / 2 - 20, startY + graphHeight + 40);
-        g2d.drawString("Issue Count", startX - 60, startY + graphHeight / 2);
 
 
     }

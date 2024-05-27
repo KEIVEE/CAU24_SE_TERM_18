@@ -3,7 +3,9 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -12,10 +14,44 @@ public class TrendPanel extends JPanel {
     String projectName;
 
     public TrendPanel(String projectName, ArrayList<Issue> issueList){
-        add(GraphPanel(0,issueList));
+        //add(GraphPanel(0,issueList));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.projectName = projectName;
         this.issueList = issueList;
+
+        JPanel issuesDay = new JPanel();
+
+        LocalDate oldestDate = null;
+        LocalDate newestDate = null;
+         //일별 비교
+        // 가장 오래된 날짜와 가장 최신 날짜 초기화
+        // 이슈 리스트에서 날짜를 파싱하고 최소 및 최대 날짜 찾기
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        for (Issue issue : issueList) {
+
+            LocalDateTime date1 = LocalDateTime.parse(issue.getDate(), formatter);
+            LocalDate date = date1.toLocalDate();
+            if (oldestDate == null || date.isBefore(oldestDate)) {
+                oldestDate = date;
+            }
+            if (newestDate == null || date.isAfter(newestDate)) {
+                newestDate = date;
+            }
+        }
+            // 날짜 차이 계산
+        Period p1 = Period.between(oldestDate,newestDate);
+        LocalDate t;
+
+        int daysDifference = p1.getDays();
+        LocalDate currentDate = oldestDate;
+        while (!currentDate.isAfter(newestDate)) {
+            if(returnnum(currentDate) ==1 ){
+                issuesDay.add(statisticByDate(currentDate));
+            }
+            currentDate = currentDate.plusDays(1);
+
+        }
+        add(issuesDay);
 
         JScrollPane statisticByIssueStatus = statisticByIssueStatus();
         JScrollPane statisticByDev = statisticByDev();
@@ -163,5 +199,42 @@ public class TrendPanel extends JPanel {
         statisticByDevWithScroll.setVerticalScrollBar(new JScrollBar());
 
         return statisticByDevWithScroll;
+    }
+
+    ArrayList<Issue> issuesByDate(LocalDate date){
+        ArrayList<Issue> newIssues = new ArrayList<>();
+        for(int i = 0; i <issueList.size(); i++){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime = LocalDateTime.parse(issueList.get(i).getDate(), formatter);
+            if(dateTime.toLocalDate().equals(date)){
+                newIssues.add(issueList.get(i));
+            }
+
+
+        }
+        return newIssues;
+    }
+
+    int returnnum(LocalDate date){
+        ArrayList<Issue> issues = issuesByDate(date);
+        int amountLabel = issues.size();
+        if(amountLabel == 0){
+            return -1;
+        }
+        else return 1;
+    }
+
+    JPanel statisticByDate(LocalDate date){
+        ArrayList<Issue> issues = issuesByDate(date);
+        JPanel statisticByDate = new JPanel(new BorderLayout());
+
+        JLabel dateLabel = new JLabel(String.valueOf(date));
+        JLabel amountLabel = new JLabel(String.valueOf(issues.size()));
+
+        statisticByDate.add(dateLabel,BorderLayout.NORTH);
+
+        statisticByDate.add(amountLabel,BorderLayout.CENTER);
+
+        return statisticByDate;
     }
 }

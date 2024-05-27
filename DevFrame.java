@@ -54,6 +54,7 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
         //다른 탭에 있는 패널과 데브, 테스터 창의 패널에도 적용시켜야 한다.
         totalPane1.setVerticalScrollBar(new JScrollBar());
         pane.addTab("내 이슈", totalPane1);
+        pane.addTab("트렌드", new TrendPanel(projectName, issues.browseAll()));
         return pane;
     }
     JPanel issuePanel(int index){ //이슈 하나에 대한 간단한 정보를 가지고 있는 패널이다.
