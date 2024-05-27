@@ -216,9 +216,7 @@ public class TrendPanel extends JPanel {
             }
 
         }
-        JScrollPane statisticByDatesWithScroll = new JScrollPane(statisticByDates);
-        statisticByDatesWithScroll.setHorizontalScrollBar(new JScrollBar());
 
-        return statisticByDatesWithScroll;
+        return new JScrollPane(statisticByDates);
     }
 }

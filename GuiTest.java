@@ -109,7 +109,7 @@ class MyFrame extends JFrame{ //로그인 창
                     while(loginRs.next()) {
                         if (loginRs.getString("password").equals(pwcheck)) { //패스워드가 데이터베이스와 일치하는지 확인하고
                             if (loginRs.getString("category").equals("admin")) { //얘가 어드민이면 어드민 창을 띄운다
-                                new AdminFrame();
+                                new AdminFrame(proj, issues);
                             } else if (loginRs.getString("category").equals("tester")) { //테스터면
                                 Tester testerUser = new Tester(loginRs.getString("name"));//테스터 객체를 생성,
                                 new ProjectSelection(proj, issues, testerUser);//프로젝트 고르는 창으로 이동한다.
@@ -135,7 +135,8 @@ class MyFrame extends JFrame{ //로그인 창
                    id.setText("");
                    password.setText("");
                    loginfail.setText("잘못된 ID 혹은 비밀번호입니다.");
-                    //new MyFrame();//로그인 창을 다시 뜨게 한다
+                   proj = new Project();
+                   issues = new ArrayList<>();
                 }
 
                 if(login_status == true) {

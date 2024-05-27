@@ -53,6 +53,10 @@ public class Issue { //이슈는
         this.fixer = fixer;
         this.comments = comments;
     }
+
+    public String getProjectName() {
+        return projectName;
+    }
     //디비에 이미 있는 이슈를 불러와서 이슈 어레이리스트(GuiTest 에 있는)에 넣을 때 쓰는 생성자.
 
     public String getTitle(){

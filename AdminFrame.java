@@ -6,8 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 class AdminF extends JFrame {
-    public AdminF() {
+    Project proj;
+    ArrayList<Issue> issues;
+    public AdminF(Project proj, ArrayList<Issue> issues) {
         super("Admin : ISSUE HANDLING SYSTEM");
+        this.proj = proj;
+        this.issues = issues;
         setSize(900, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -43,6 +47,30 @@ class AdminF extends JFrame {
         searchPanel.add(resultPanel, BorderLayout.CENTER);
 
         pane.addTab("이슈 검색", searchPanel);
+
+        JTabbedPane trendTab = new JTabbedPane();
+        for(int i = 0; i <proj.getSize(); i++){
+            String theProjectName = proj.getName(i);
+            ArrayList<Issue> projectIssues = new ArrayList<>();
+            for(int j = 0; j < issues.size(); j++){
+                if(issues.get(j).getProjectName().equals(theProjectName)){
+                    projectIssues.add(issues.get(j));
+                }
+            }
+            JPanel seeTrendsPanel = new JPanel();
+            JButton seeTrends = new JButton("SEE TRENDS");
+            seeTrends.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    seeTrendsPanel.remove(seeTrends);
+                    seeTrendsPanel.add(new TrendPanel(theProjectName, projectIssues));
+
+                }
+            });
+            seeTrendsPanel.add(seeTrends);
+            trendTab.addTab(theProjectName, seeTrendsPanel);
+        }
+        pane.addTab("트렌드", trendTab);
 
         searchButton.addActionListener(new ActionListener() {
             @Override
@@ -477,5 +505,7 @@ class AC extends JPanel {
 }
 
 public class AdminFrame {
-    AdminF t = new AdminF();
+    public AdminFrame(Project proj, ArrayList<Issue> issues){
+        new AdminF(proj, issues);
+    }
 }
