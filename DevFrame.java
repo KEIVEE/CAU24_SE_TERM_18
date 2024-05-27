@@ -33,7 +33,7 @@ class DevF extends JFrame { //데브가 프로젝트 선택까지 마치면 뜨�
         assignedIssuePane.setLayout(new BoxLayout(assignedIssuePane, BoxLayout.Y_AXIS));
 
         for(int i = 0; i < issues.getSize(); i++){ // 이 프로젝트의 이슈 중에서
-            if(issues.getTheIssue(i).getAssignee()!=null && issues.getTheIssue(i).getAssignee().equals(userName) && issues.getTheIssue(i).getStatus().equals(Status.ASSIGNED)){
+            if(issues.getTheIssue(i).getAssignee()!=null && issues.getTheIssue(i).getAssignee().equals(userName)){
                 //어사이니가 널이 아니고 본인이면: 앞의 조건이 없으면 오류가 난다. 이슈 생성 시에는 어사이니가 없어서 null 이기 때문임
 
                 JPanel issuePanel = issuePanel(i); //그 이슈에 대한 패널을 만들고
