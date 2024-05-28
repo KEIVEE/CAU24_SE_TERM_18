@@ -14,7 +14,7 @@ public class TrendPanel extends JPanel {
     String projectName;
 
     public TrendPanel(String projectName, ArrayList<Issue> issueList){
-        //add(GraphPanel(0,issueList));
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.projectName = projectName;
         this.issueList = issueList;
