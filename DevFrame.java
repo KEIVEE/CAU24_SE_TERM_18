@@ -42,7 +42,7 @@ public class DevFrame {
 
             ArrayList<Issue> assignedIssues = new ArrayList<>();
             for(int i = 0; i < issues.getSize(); i++){
-                if(issues.getTheIssue(i).getReporter().equals(userName)){
+                if(issues.getTheIssue(i).getAssignee()!=null && issues.getTheIssue(i).getAssignee().equals(userName)){
                     assignedIssues.add(issues.getTheIssue(i));
                 }
             }

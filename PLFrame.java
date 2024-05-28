@@ -43,19 +43,24 @@ public class PLFrame {
 
             ArrayList<Issue> allIssues = new ArrayList<>();
             ArrayList<Issue> newIssues = new ArrayList<>();
+            ArrayList<Issue> resolvedIssues = new ArrayList<>();
             for(int i = 0; i < issues.getSize(); i++){
-                if(issues.getTheIssue(i).getReporter().equals(userName)){
+
                     allIssues.add(issues.getTheIssue(i));
-                    if(issues.getTheIssue(i).getStatus().equals(Status.FIXED)){
+                    if(issues.getTheIssue(i).getStatus().equals(Status.NEW)) {
                         newIssues.add(issues.getTheIssue(i));//그 이슈의 status 가 픽스드라면 픽스드에도 추가한다.
                     }
-                }
+                    else if(issues.getTheIssue(i).getStatus().equals(Status.RESOLVED)){
+                        resolvedIssues.add(issues.getTheIssue(i));
+                    }
+
             }
             FirstPanel myIssuesFirstPanel = new FirstPanel(allIssues);
             FirstPanel myFixedIssuesFirstPanel = new FirstPanel(newIssues);
+            FirstPanel myResolvedIssuesFirstPanel = new FirstPanel(resolvedIssues);
             issuesPanel.add(myIssuesFirstPanel);
             newIssuesPanel.add(myFixedIssuesFirstPanel);
-
+            resolvedIssuesPanel.add(myResolvedIssuesFirstPanel);
 
             for(int i = 0; i < issues.getSize(); i++){
                 //이슈들을 돌아보면서,
@@ -73,6 +78,8 @@ public class PLFrame {
             }
             JButton refresh = new JButton("refresh");
             JButton refresh1 = new JButton("refresh");
+            newIssuesPanel.add(refresh);
+            resolvedIssuesPanel.add(refresh1);
             refresh.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
