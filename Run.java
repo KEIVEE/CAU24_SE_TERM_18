@@ -174,7 +174,7 @@ class MyFrame extends JFrame{ //로그인 창
 
 }
 
-public class GuiTest{
+public class Run {
 
     public static void main(String[] args) {
         new MyFrame();
