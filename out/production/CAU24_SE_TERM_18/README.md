@@ -1,2 +1,0 @@
-# KEIVEE.github.io
-SE TERM PROJECT
