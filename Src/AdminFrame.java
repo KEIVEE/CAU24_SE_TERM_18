@@ -382,7 +382,9 @@ public class AdminFrame {
                         stmt.close();
                         connection.close();
                     } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
+                        if (ex.getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException")) {
+                            new NewProject();
+                        }
                     }
                     dispose();
                 }
